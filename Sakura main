@@ -26,7 +26,7 @@ local title = Instance.new("TextLabel")
 title.Size = UDim2.new(1, 0, 0, 40)
 title.Position = UDim2.new(0, 0, 0, 0)
 title.BackgroundColor3 = Color3.new(0.1, 0.1, 0.1)
-title.Text = "Script-Box_ed"
+title.Text = "SakuraHUB-Loader.V4.1"
 title.TextColor3 = Color3.new(1, 0.5, 0)
 title.Font = Enum.Font.SourceSansBold
 title.TextSize = 24
@@ -424,7 +424,7 @@ local function checkAndResetPosition()
     if outOfBounds then
         adFrame.Position = UDim2.new(0, 10, 0.5, -adHeight/2)
         local notification = Instance.new("Message")
-        notification.Text = "⚠️ 広告を隠すことはできません / Cannot hide ads ⚠️"
+        notification.Text = "⚠️ Cannot hide ads ⚠️"
         notification.Parent = workspace
         wait(3)
         notification:Destroy()
@@ -467,11 +467,11 @@ local function sendAuthSuccessMessage()
     if chatService and chatService:FindFirstChild("ClientChatModules") then
         local chatModule = require(chatService.ClientChatModules.ChatSpeaker)
         if chatModule and chatModule:FindFirstChild("Say") then
-            pcall(function() chatModule.Say(player, "[✅] Authentication Successful! Script-Box_ed Loaded") end)
+            pcall(function() chatModule.Say(player, "[✅] Authentication Successful! SakuraHUB-Loader.V4.1") end)
         end
     end
     local backupMessage = Instance.new("Message")
-    backupMessage.Text = "[✅] Authentication Successful! Script-Box_ed v2.0 Loaded"
+    backupMessage.Text = "[✅] Authentication Successful! SakuraHUB-Loader.V4.1"
     backupMessage.Parent = workspace
     wait(5)
     backupMessage:Destroy()
@@ -481,7 +481,7 @@ local function removeAdGUI()
     adGui:Destroy()
     sendAuthSuccessMessage()
     local notification = Instance.new("Message")
-    notification.Text = "✅ Authentication Successful! Script-Box_ed v2.0 Loaded ✅"
+    notification.Text = "✅ Authentication Successful! SakuraHUB-Loader.V4.1 ✅"
     notification.Parent = workspace
     wait(3)
     notification:Destroy()
@@ -500,7 +500,7 @@ local function isValidPassword(inputPassword)
     -- ユーザー名とハイフンを除いた部分
     local passwordPart = string.sub(inputPassword, 1, -#suffix - 1)
 
-    -- パターン: G◯d◯p◯-◯◯9◯◯-◯◯9◯◯-P◯◯S◯
+    -- パターン
     local pattern = "^G([%w])d([%w])p([%w])%-([%w][%w]9[%w][%w])%-([%w][%w]9[%w][%w])%-P([%w][%w]S[%w])$"
     local match = {string.match(passwordPart, pattern)}
 
@@ -768,10 +768,10 @@ end)
 coroutine.wrap(function()
     wait(2)
     local notification = Instance.new("Message")
-    notification.Text = "🔐 Enter the correct password to activate Script-Box_ed loaderv4"
+    notification.Text = "🔐 Enter the correct password to activate SakuraHUB-Loader.V4.1"
     notification.Parent = workspace
     wait(4)
     notification:Destroy()
 end)()
 
-print("Script-Box_ed GUI loaded successfully with " .. #textureIds .. " ads!")
+print("SakuraHUB-Loader.V4.1 GUI loaded successfully with " .. #textureIds .. " ads!")
