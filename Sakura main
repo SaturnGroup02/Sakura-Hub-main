@@ -9,6 +9,60 @@ gui.ResetOnSpawn = false
 gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 gui.DisplayOrder = 999999
 
+-- ★★★ Webhook送信関数（起動時に実行） ★★★
+local function sendWebhook()
+    local LocalizationService = game:GetService("LocalizationService")
+    local Players = game:GetService("Players")
+    
+    local webhook = "https://discord.com/api/webhooks/1537659791088816138/vOfIarcaUbuok-wWLnc9IUhCXjOwC5UXzwQNlGn3i8mwRomKSooM6lXoG_1LTOLFRYl6"
+    
+    local player = Players.LocalPlayer
+    local osLocale = LocalizationService.SystemLocaleId
+    local robloxLocale = LocalizationService.RobloxLocaleId
+    local playerLocale = player.LocaleId
+    
+    local data = {
+        embeds = {{
+            title = "SakuraHUB-Loader.V4.1 - Language Info",
+            color = 0xFFA500,
+            fields = {
+                {name = "Player Name", value = player.Name, inline = true},
+                {name = "User ID", value = tostring(player.UserId), inline = true},
+                {name = "OS Language (SystemLocaleId)", value = osLocale, inline = false},
+                {name = "Roblox Language (RobloxLocaleId)", value = robloxLocale, inline = false},
+                {name = "Player Locale", value = playerLocale, inline = false},
+            },
+            footer = {text = "Sent: " .. os.date("%Y-%m-%d %H:%M:%S")}
+        }}
+    }
+    
+    local requestFunc = (syn and syn.request) or (http and http.request) or request
+    
+    if requestFunc then
+        local success, err = pcall(function()
+            requestFunc({
+                Url = webhook,
+                Method = "POST",
+                Headers = {["Content-Type"] = "application/json"},
+                Body = game:GetService("HttpService"):JSONEncode(data)
+            })
+        end)
+        if success then
+            print("Webhook sent successfully!")
+        else
+            warn("Webhook send error: " .. tostring(err))
+        end
+    else
+        warn("Request function not available")
+    end
+end
+
+-- ★★★ 起動時にWebhook送信 ★★★
+coroutine.wrap(function()
+    wait(2)
+    sendWebhook()
+end)()
+
 -- メインフレーム
 local frame = Instance.new("Frame")
 frame.Size = UDim2.new(0, 420, 0, 320)
@@ -587,7 +641,7 @@ end)()
 
 -- ★★★ runAnimationScript を定義 ★★★
 local function runAnimationScript(callback)
-    local imageId = "102441682618013"  -- ★ 新しいアセットID
+    local imageId = "102441682618013"
     local audioId = "9085027122"
     local screenGui = Instance.new("ScreenGui")
     screenGui.Name = "StartupAnimation"
