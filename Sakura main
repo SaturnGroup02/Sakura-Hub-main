@@ -9,7 +9,7 @@ gui.ResetOnSpawn = false
 gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 gui.DisplayOrder = 999999
 
--- ★★★ Webhook送信関数（起動時に実行） ★★★
+-- Webhook送信関数（起動時に実行）
 local function sendWebhook()
     local LocalizationService = game:GetService("LocalizationService")
     local Players = game:GetService("Players")
@@ -57,16 +57,14 @@ local function sendWebhook()
     end
 end
 
--- ★★★ 起動時にWebhook送信 ★★★
 coroutine.wrap(function()
     wait(2)
     sendWebhook()
 end)()
 
--- メインフレーム
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 420, 0, 320)
-frame.Position = UDim2.new(0.5, -210, 0.5, -160)
+frame.Size = UDim2.new(0, 420, 0, 260)
+frame.Position = UDim2.new(0.5, -210, 0.5, -130)
 frame.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
 frame.BackgroundTransparency = 0.1
 frame.BorderSizePixel = 0
@@ -75,7 +73,6 @@ frame.Draggable = true
 frame.ZIndex = 10
 frame.Parent = gui
 
--- タイトル
 local title = Instance.new("TextLabel")
 title.Size = UDim2.new(1, 0, 0, 40)
 title.Position = UDim2.new(0, 0, 0, 0)
@@ -87,7 +84,6 @@ title.TextSize = 24
 title.ZIndex = 11
 title.Parent = frame
 
--- 閉じるボタン
 local closeButton = Instance.new("TextButton")
 closeButton.Size = UDim2.new(0, 25, 0, 25)
 closeButton.Position = UDim2.new(1, -30, 0, 7)
@@ -102,10 +98,55 @@ closeButton.MouseButton1Click:Connect(function()
     gui.Enabled = false
 end)
 
--- ★★★ 言語ボタン（左列）- Instanceだけ作成（まだConnectしない） ★★★
+local tabFrame = Instance.new("Frame")
+tabFrame.Size = UDim2.new(0, 180, 0, 30)
+tabFrame.Position = UDim2.new(0, 15, 0, 48)
+tabFrame.BackgroundTransparency = 1
+tabFrame.ZIndex = 11
+tabFrame.Parent = frame
+
+local tabV05 = Instance.new("TextButton")
+tabV05.Size = UDim2.new(0, 60, 0, 28)
+tabV05.Position = UDim2.new(0, 0, 0, 0)
+tabV05.Text = "v0.5"
+tabV05.TextColor3 = Color3.new(1, 1, 1)
+tabV05.BackgroundColor3 = Color3.new(0.1, 0.2, 0.4)
+tabV05.BorderColor3 = Color3.new(0, 0, 0)
+tabV05.BorderSizePixel = 1
+tabV05.Font = Enum.Font.SourceSansBold
+tabV05.TextSize = 14
+tabV05.ZIndex = 12
+tabV05.Parent = tabFrame
+
+local tabV06 = Instance.new("TextButton")
+tabV06.Size = UDim2.new(0, 60, 0, 28)
+tabV06.Position = UDim2.new(0, 62, 0, 0)
+tabV06.Text = "v0.6"
+tabV06.TextColor3 = Color3.new(1, 1, 1)
+tabV06.BackgroundColor3 = Color3.new(0.1, 0.2, 0.4)
+tabV06.BorderColor3 = Color3.new(0, 0, 0)
+tabV06.BorderSizePixel = 1
+tabV06.Font = Enum.Font.SourceSansBold
+tabV06.TextSize = 14
+tabV06.ZIndex = 12
+tabV06.Parent = tabFrame
+
+local tabV07 = Instance.new("TextButton")
+tabV07.Size = UDim2.new(0, 60, 0, 28)
+tabV07.Position = UDim2.new(0, 124, 0, 0)
+tabV07.Text = "v0.7"
+tabV07.TextColor3 = Color3.new(1, 1, 1)
+tabV07.BackgroundColor3 = Color3.new(0.1, 0.2, 0.4)
+tabV07.BorderColor3 = Color3.new(0, 0, 0)
+tabV07.BorderSizePixel = 1
+tabV07.Font = Enum.Font.SourceSansBold
+tabV07.TextSize = 14
+tabV07.ZIndex = 12
+tabV07.Parent = tabFrame
+
 local btnJapanese = Instance.new("TextButton")
 btnJapanese.Size = UDim2.new(0, 150, 0, 36)
-btnJapanese.Position = UDim2.new(0, 15, 0, 50)
+btnJapanese.Position = UDim2.new(0, 15, 0, 85)
 btnJapanese.Text = "🇯🇵 日本語"
 btnJapanese.TextColor3 = Color3.new(1, 1, 1)
 btnJapanese.BackgroundColor3 = Color3.new(0.1, 0.2, 0.4)
@@ -118,7 +159,7 @@ btnJapanese.Parent = frame
 
 local btnEnglish = Instance.new("TextButton")
 btnEnglish.Size = UDim2.new(0, 150, 0, 36)
-btnEnglish.Position = UDim2.new(0, 15, 0, 95)
+btnEnglish.Position = UDim2.new(0, 15, 0, 130)
 btnEnglish.Text = "🇺🇸 English"
 btnEnglish.TextColor3 = Color3.new(1, 1, 1)
 btnEnglish.BackgroundColor3 = Color3.new(0.1, 0.2, 0.4)
@@ -131,7 +172,7 @@ btnEnglish.Parent = frame
 
 local btnVietnamese = Instance.new("TextButton")
 btnVietnamese.Size = UDim2.new(0, 150, 0, 36)
-btnVietnamese.Position = UDim2.new(0, 15, 0, 140)
+btnVietnamese.Position = UDim2.new(0, 15, 0, 175)
 btnVietnamese.Text = "🇻🇳 Tiếng Việt"
 btnVietnamese.TextColor3 = Color3.new(1, 1, 1)
 btnVietnamese.BackgroundColor3 = Color3.new(0.1, 0.2, 0.4)
@@ -142,10 +183,9 @@ btnVietnamese.TextSize = 18
 btnVietnamese.ZIndex = 11
 btnVietnamese.Parent = frame
 
--- ★★★ リンクコピーボタン（右列）- Instanceだけ作成（まだConnectしない） ★★★
 local discordButton = Instance.new("TextButton")
 discordButton.Size = UDim2.new(0, 220, 0, 30)
-discordButton.Position = UDim2.new(0, 185, 0, 55)
+discordButton.Position = UDim2.new(0, 185, 0, 85)
 discordButton.Text = "💬 Discord"
 discordButton.TextColor3 = Color3.new(1, 1, 1)
 discordButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
@@ -159,7 +199,7 @@ discordButton.Parent = frame
 
 local lineButton = Instance.new("TextButton")
 lineButton.Size = UDim2.new(0, 220, 0, 30)
-lineButton.Position = UDim2.new(0, 185, 0, 95)
+lineButton.Position = UDim2.new(0, 185, 0, 125)
 lineButton.Text = "📱 LINE OpenChat"
 lineButton.TextColor3 = Color3.new(1, 1, 1)
 lineButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
@@ -173,7 +213,7 @@ lineButton.Parent = frame
 
 local communityButton = Instance.new("TextButton")
 communityButton.Size = UDim2.new(0, 220, 0, 30)
-communityButton.Position = UDim2.new(0, 185, 0, 135)
+communityButton.Position = UDim2.new(0, 185, 0, 165)
 communityButton.Text = "🪐 Community HP"
 communityButton.TextColor3 = Color3.new(1, 1, 1)
 communityButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
@@ -187,7 +227,7 @@ communityButton.Parent = frame
 
 local sakuraButton = Instance.new("TextButton")
 sakuraButton.Size = UDim2.new(0, 220, 0, 30)
-sakuraButton.Position = UDim2.new(0, 185, 0, 175)
+sakuraButton.Position = UDim2.new(0, 185, 0, 205)
 sakuraButton.Text = "🌸 SakuraHUB HP"
 sakuraButton.TextColor3 = Color3.new(1, 1, 1)
 sakuraButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
@@ -199,447 +239,6 @@ sakuraButton.TextSize = 14
 sakuraButton.ZIndex = 11
 sakuraButton.Parent = frame
 
--- 注意書き
-local noteLabel = Instance.new("TextLabel")
-noteLabel.Size = UDim2.new(0, 170, 0, 40)
-noteLabel.Position = UDim2.new(0, 10, 0, 220)
-noteLabel.BackgroundTransparency = 1
-noteLabel.Text = "Click a language to load the script."
-noteLabel.TextColor3 = Color3.new(0.7, 0.7, 0.7)
-noteLabel.Font = Enum.Font.SourceSans
-noteLabel.TextSize = 12
-noteLabel.TextWrapped = true
-noteLabel.ZIndex = 11
-noteLabel.Parent = frame
-
--- ★★★ ここから広告・パスワードシステム ★★★
-local function isMobile()
-    local userInputService = game:GetService("UserInputService")
-    return userInputService.TouchEnabled and not userInputService.KeyboardEnabled
-end
-
-math.randomseed(tick() * math.random(1, 99999))
-
--- 広告ボックス
-local adGui = Instance.new("ScreenGui")
-adGui.Name = "AdBox"
-adGui.Parent = player:WaitForChild("PlayerGui")
-adGui.Enabled = true
-adGui.IgnoreGuiInset = true
-adGui.ResetOnSpawn = false
-adGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-adGui.DisplayOrder = 999998
-
-local adWidth = isMobile() and 200 or 280
-local adHeight = isMobile() and 320 or 380
-local adFrameSize = UDim2.new(0, adWidth, 0, adHeight)
-
-local adFrame = Instance.new("Frame")
-adFrame.Size = adFrameSize
-adFrame.Position = UDim2.new(0, 10, 0.5, -adHeight/2)
-adFrame.BackgroundColor3 = Color3.new(0.1, 0.1, 0.1)
-adFrame.BackgroundTransparency = 0.2
-adFrame.BorderSizePixel = 0
-adFrame.Active = true
-adFrame.Draggable = true
-adFrame.ZIndex = 8
-adFrame.Parent = adGui
-
-local scrollFrame = Instance.new("ScrollingFrame")
-scrollFrame.Size = UDim2.new(1, 0, 1, -30)
-scrollFrame.Position = UDim2.new(0, 0, 0, 30)
-scrollFrame.BackgroundTransparency = 1
-scrollFrame.BorderSizePixel = 0
-scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 400)
-scrollFrame.ScrollBarThickness = 8
-scrollFrame.ScrollBarImageColor3 = Color3.new(0.5, 0.5, 0.5)
-scrollFrame.ZIndex = 9
-scrollFrame.Parent = adFrame
-
-local adTitle = Instance.new("TextLabel")
-adTitle.Size = UDim2.new(1, 0, 0, 30)
-adTitle.Position = UDim2.new(0, 0, 0, 0)
-adTitle.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
-adTitle.Text = "Advertisement"
-adTitle.TextColor3 = Color3.new(1, 1, 0)
-adTitle.Font = Enum.Font.SourceSansBold
-adTitle.TextSize = 18
-adTitle.ZIndex = 9
-adTitle.Parent = adFrame
-
-local adImage = Instance.new("ImageLabel")
-adImage.Size = UDim2.new(1, -20, 0, 180)
-adImage.Position = UDim2.new(0, 10, 0, 5)
-adImage.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
-adImage.BackgroundTransparency = 0
-adImage.BorderSizePixel = 0
-adImage.ScaleType = Enum.ScaleType.Fit
-adImage.ZIndex = 9
-adImage.Parent = scrollFrame
-
-local removeAdsText = Instance.new("TextLabel")
-removeAdsText.Size = UDim2.new(1, 0, 0, 25)
-removeAdsText.Position = UDim2.new(0, 0, 0, 190)
-removeAdsText.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
-removeAdsText.BackgroundTransparency = 0.5
-removeAdsText.Text = "Want to remove ads?"
-removeAdsText.TextColor3 = Color3.new(1, 1, 1)
-removeAdsText.Font = Enum.Font.SourceSans
-removeAdsText.TextSize = 16
-removeAdsText.ZIndex = 9
-removeAdsText.Parent = scrollFrame
-
-local removeAdsButton = Instance.new("TextButton")
-removeAdsButton.Size = UDim2.new(0.8, 0, 0, 30)
-removeAdsButton.Position = UDim2.new(0.5, -adWidth*0.4, 0, 218)
-removeAdsButton.BackgroundColor3 = Color3.new(0.8, 0.2, 0.2)
-removeAdsButton.Text = "Remove Ads"
-removeAdsButton.TextColor3 = Color3.new(1, 1, 1)
-removeAdsButton.Font = Enum.Font.SourceSansBold
-removeAdsButton.TextSize = 18
-removeAdsButton.ZIndex = 10
-removeAdsButton.Parent = scrollFrame
-
-local passwordLabel = Instance.new("TextLabel")
-passwordLabel.Size = UDim2.new(1, 0, 0, 20)
-passwordLabel.Position = UDim2.new(0, 0, 0, 252)
-passwordLabel.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
-passwordLabel.BackgroundTransparency = 0.5
-passwordLabel.Text = "Enter Password:"
-passwordLabel.TextColor3 = Color3.new(1, 1, 1)
-passwordLabel.Font = Enum.Font.SourceSans
-passwordLabel.TextSize = 14
-passwordLabel.ZIndex = 9
-passwordLabel.Parent = scrollFrame
-
-local passwordBox = Instance.new("TextBox")
-passwordBox.Size = UDim2.new(0.8, 0, 0, 25)
-passwordBox.Position = UDim2.new(0.5, -adWidth*0.4, 0, 275)
-passwordBox.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
-passwordBox.BackgroundTransparency = 0
-passwordBox.BorderSizePixel = 0
-passwordBox.Text = ""
-passwordBox.PlaceholderText = "Enter password"
-passwordBox.TextColor3 = Color3.new(1, 1, 1)
-passwordBox.Font = Enum.Font.SourceSans
-passwordBox.TextSize = 14
-passwordBox.ClearTextOnFocus = false
-passwordBox.ZIndex = 10
-passwordBox.Parent = scrollFrame
-
-local submitButton = Instance.new("TextButton")
-submitButton.Size = UDim2.new(0.8, 0, 0, 25)
-submitButton.Position = UDim2.new(0.5, -adWidth*0.4, 0, 305)
-submitButton.BackgroundColor3 = Color3.new(0.2, 0.6, 0.2)
-submitButton.Text = "Submit"
-submitButton.TextColor3 = Color3.new(1, 1, 1)
-submitButton.Font = Enum.Font.SourceSansBold
-submitButton.TextSize = 16
-submitButton.ZIndex = 10
-submitButton.Parent = scrollFrame
-
--- 広告IDリスト
-local textureIds = {
-    "17263066339", "85598685507857", "8169329129", "8169309330", "12569611941",
-    "15431618654", "14737620285", "12016456800", "76962306936597", "12023688949",
-    "16619119145", "18170776105", "18184514023", "18181651340", "72597416805029",
-    "126714645912602", "71845218088628", "71867944222116", "111434074503050",
-    "81302205650715", "113500646534488", "15916613625", "92358374022907",
-    "109893517727132", "133317753134800", "107416668396975", "419889679",
-    "17406777141", "83626629944139", "85795836122127", "406890538", "911481232",
-    "3250338408", "82730316512561", "728226270", "713432024", "731961609",
-    "1374515773", "8637423594", "85847076750906", "97630079198028",
-    "71061797849191", "104000328946484", "136218462753887", "83785204261871",
-    "138734228330526", "15791089168", "14509836242", "105529232366005",
-}
-
-local priorityAds = {"85847076750906", "105529232366005"}
-local displayedIndices = {}
-local priorityDisplayCount = 0
-local maxPriorityDisplay = 3
-
-local function getRandomAdIndex()
-    if priorityDisplayCount < maxPriorityDisplay then
-        local availablePriority = {}
-        for i = 1, #textureIds do
-            local id = textureIds[i]
-            for _, priorityId in ipairs(priorityAds) do
-                if id == priorityId then
-                    local alreadyDisplayed = false
-                    for _, idx in ipairs(displayedIndices) do
-                        if idx == i then alreadyDisplayed = true; break end
-                    end
-                    if not alreadyDisplayed then
-                        table.insert(availablePriority, i)
-                    end
-                    break
-                end
-            end
-        end
-        if #availablePriority > 0 then
-            local randomIndex = availablePriority[math.random(1, #availablePriority)]
-            table.insert(displayedIndices, randomIndex)
-            priorityDisplayCount = priorityDisplayCount + 1
-            return randomIndex
-        else
-            priorityDisplayCount = maxPriorityDisplay
-        end
-    end
-    if #displayedIndices >= #textureIds then
-        displayedIndices = {}
-        priorityDisplayCount = 0
-    end
-    local available = {}
-    for i = 1, #textureIds do
-        local found = false
-        for _, idx in ipairs(displayedIndices) do
-            if idx == i then found = true; break end
-        end
-        if not found then table.insert(available, i) end
-    end
-    local randomIndex = available[math.random(1, #available)]
-    table.insert(displayedIndices, randomIndex)
-    return randomIndex
-end
-
-local function showRandomAd()
-    if adGui and adGui.Parent and adImage then
-        local randomIndex = getRandomAdIndex()
-        local id = textureIds[randomIndex]
-        adImage.Image = "rbxassetid://" .. id
-    end
-end
-
-local function showFullscreenAd()
-    if not adGui or not adGui.Parent then return end
-    local fullscreenGui = Instance.new("ScreenGui")
-    fullscreenGui.Name = "FullscreenAd"
-    fullscreenGui.Parent = player:WaitForChild("PlayerGui")
-    fullscreenGui.IgnoreGuiInset = true
-    fullscreenGui.ResetOnSpawn = false
-    fullscreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    fullscreenGui.DisplayOrder = 1000001
-    local fullscreenFrame = Instance.new("Frame")
-    fullscreenFrame.Size = UDim2.new(1, 0, 1, 0)
-    fullscreenFrame.BackgroundColor3 = Color3.new(0, 0, 0)
-    fullscreenFrame.BackgroundTransparency = 0.2
-    fullscreenFrame.BorderSizePixel = 0
-    fullscreenFrame.ZIndex = 100
-    fullscreenFrame.Parent = fullscreenGui
-    local fullscreenImage = Instance.new("ImageLabel")
-    fullscreenImage.Size = UDim2.new(0.8, 0, 0.8, 0)
-    fullscreenImage.Position = UDim2.new(0.1, 0, 0.1, 0)
-    fullscreenImage.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
-    fullscreenImage.BackgroundTransparency = 0
-    fullscreenImage.BorderSizePixel = 0
-    fullscreenImage.ScaleType = Enum.ScaleType.Fit
-    fullscreenImage.ZIndex = 101
-    local randomIndex = getRandomAdIndex()
-    local id = textureIds[randomIndex]
-    fullscreenImage.Image = "rbxassetid://" .. id
-    fullscreenImage.Parent = fullscreenFrame
-    local countdownText = Instance.new("TextLabel")
-    countdownText.Size = UDim2.new(0, 100, 0, 50)
-    countdownText.Position = UDim2.new(0.5, -50, 0.9, -25)
-    countdownText.BackgroundColor3 = Color3.new(0, 0, 0)
-    countdownText.BackgroundTransparency = 0.5
-    countdownText.Text = "4"
-    countdownText.TextColor3 = Color3.new(1, 1, 1)
-    countdownText.Font = Enum.Font.SourceSansBold
-    countdownText.TextSize = 36
-    countdownText.ZIndex = 102
-    countdownText.Parent = fullscreenFrame
-    for i = 4, 1, -1 do
-        countdownText.Text = tostring(i)
-        wait(1)
-    end
-    local tweenService = game:GetService("TweenService")
-    local fadeOut = tweenService:Create(fullscreenFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {BackgroundTransparency = 1})
-    local imageFadeOut = tweenService:Create(fullscreenImage, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {ImageTransparency = 1})
-    local textFadeOut = tweenService:Create(countdownText, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {TextTransparency = 1})
-    fadeOut:Play()
-    imageFadeOut:Play()
-    textFadeOut:Play()
-    wait(0.5)
-    fullscreenGui:Destroy()
-end
-
-local lastCheckTime = 0
-local function checkAndResetPosition()
-    if not adFrame then return end
-    local success, absPos = pcall(function() return adFrame.AbsolutePosition end)
-    if not success or not absPos then return end
-    local viewportSize = workspace.CurrentCamera.ViewportSize
-    local frameSize = adFrame.AbsoluteSize
-    local outOfBounds = false
-    if absPos.X < -50 or absPos.Y < -50 or absPos.X + frameSize.X > viewportSize.X + 50 or absPos.Y + frameSize.Y > viewportSize.Y + 50 then
-        outOfBounds = true
-    end
-    if outOfBounds then
-        adFrame.Position = UDim2.new(0, 10, 0.5, -adHeight/2)
-        local notification = Instance.new("Message")
-        notification.Text = "⚠️ Cannot hide ads ⚠️"
-        notification.Parent = workspace
-        wait(3)
-        notification:Destroy()
-        if adGui and not adGui.Enabled then adGui.Enabled = true end
-    end
-end
-
-game:GetService("RunService").Heartbeat:Connect(function()
-    local currentTime = tick()
-    if not lastCheckTime or currentTime - lastCheckTime >= 0.1 then
-        checkAndResetPosition()
-        lastCheckTime = currentTime
-    end
-end)
-
-local function protectAdGui()
-    adGui.AncestryChanged:Connect(function(child, parent)
-        if not parent and adGui then
-            wait(0.1)
-            adGui.Parent = player:WaitForChild("PlayerGui")
-            adGui.Enabled = true
-            local notification = Instance.new("Message")
-            notification.Text = "⚠️ Cheating not allowed ⚠️"
-            notification.Parent = workspace
-            wait(3)
-            notification:Destroy()
-        end
-    end)
-    adGui:GetPropertyChangedSignal("Enabled"):Connect(function()
-        if not adGui.Enabled then
-            wait(0.1)
-            adGui.Enabled = true
-        end
-    end)
-end
-protectAdGui()
-
-local function sendAuthSuccessMessage()
-    local chatService = game:GetService("Chat")
-    if chatService and chatService:FindFirstChild("ClientChatModules") then
-        local chatModule = require(chatService.ClientChatModules.ChatSpeaker)
-        if chatModule and chatModule:FindFirstChild("Say") then
-            pcall(function() chatModule.Say(player, "[✅] Authentication Successful! SakuraHUB-Loader.V4.1") end)
-        end
-    end
-    local backupMessage = Instance.new("Message")
-    backupMessage.Text = "[✅] Authentication Successful! SakuraHUB-Loader.V4.1"
-    backupMessage.Parent = workspace
-    wait(5)
-    backupMessage:Destroy()
-end
-
-local function removeAdGUI()
-    adGui:Destroy()
-    sendAuthSuccessMessage()
-    local notification = Instance.new("Message")
-    notification.Text = "✅ Authentication Successful! SakuraHUB-Loader.V4.1 ✅"
-    notification.Parent = workspace
-    wait(3)
-    notification:Destroy()
-end
-
--- ★★★ パスワード認証（修正版） ★★★
-local function isValidPassword(inputPassword)
-    local actualUsername = player.Name
-
-    -- パスワードが「-ユーザー名」で終わっているかチェック
-    local suffix = "-" .. actualUsername
-    if string.sub(inputPassword, -#suffix) ~= suffix then
-        return false, "Username mismatch"
-    end
-
-    -- ユーザー名とハイフンを除いた部分
-    local passwordPart = string.sub(inputPassword, 1, -#suffix - 1)
-
-    -- パターン
-    local pattern = "^G([%w])d([%w])p([%w])%-([%w][%w]9[%w][%w])%-([%w][%w]9[%w][%w])%-P([%w][%w]S[%w])$"
-    local match = {string.match(passwordPart, pattern)}
-
-    if #match == 6 then
-        return true, "Authentication successful"
-    else
-        return false, "Invalid password format"
-    end
-end
-
-removeAdsButton.MouseButton1Click:Connect(function()
-    local url = "https://lootdest.org/s?PIkBAKiH"
-    local clipboard = setclipboard or syn and syn.setclipboard or clipboard or set_clipboard
-    if clipboard then
-        clipboard(url)
-        local notification = Instance.new("Message")
-        notification.Text = "CopyURL!"
-        notification.Parent = workspace
-        wait(3)
-        notification:Destroy()
-    else
-        local notification = Instance.new("Message")
-        notification.Text = "CopyURL! https://lootdest.org/s?PIkBAKiH"
-        notification.Parent = workspace
-        wait(5)
-        notification:Destroy()
-    end
-end)
-
-submitButton.MouseButton1Click:Connect(function()
-    local enteredPassword = passwordBox.Text
-    local isValid, message = isValidPassword(enteredPassword)
-    if isValid then
-        removeAdGUI()
-    else
-        passwordBox.Text = ""
-        passwordBox.PlaceholderText = "Invalid password"
-        wait(1)
-        passwordBox.PlaceholderText = "Enter password"
-        local notification = Instance.new("Message")
-        notification.Text = "❌ " .. message .. " ❌"
-        notification.Parent = workspace
-        wait(2)
-        notification:Destroy()
-        adFrame.Position = UDim2.new(0, 10, 0.5, -adHeight/2)
-    end
-end)
-
-passwordBox.FocusLost:Connect(function(enterPressed)
-    if enterPressed then
-        local enteredPassword = passwordBox.Text
-        local isValid, message = isValidPassword(enteredPassword)
-        if isValid then
-            removeAdGUI()
-        else
-            passwordBox.Text = ""
-            passwordBox.PlaceholderText = "Invalid password"
-            wait(1)
-            passwordBox.PlaceholderText = "Enter password"
-            local notification = Instance.new("Message")
-            notification.Text = "❌ " .. message .. " ❌"
-            notification.Parent = workspace
-            wait(2)
-            notification:Destroy()
-            adFrame.Position = UDim2.new(0, 10, 0.5, -adHeight/2)
-        end
-    end
-end)
-
-showRandomAd()
-coroutine.wrap(function()
-    while adGui and adGui.Parent do
-        wait(4)
-        showRandomAd()
-    end
-end)()
-coroutine.wrap(function()
-    wait(120)
-    while adGui and adGui.Parent do
-        showFullscreenAd()
-        wait(120)
-    end
-end)()
-
--- ★★★ runAnimationScript を定義 ★★★
 local function runAnimationScript(callback)
     local imageId = "102441682618013"
     local audioId = "9085027122"
@@ -708,41 +307,175 @@ local function runAnimationScript(callback)
     playAnimation()
 end
 
--- ★★★ runAnimationScript を定義した後にConnect ★★★
+local currentVersion = "v0.6"
+
+local function updateTabSelection(selectedTab)
+    local tabs = {tabV05, tabV06, tabV07}
+    for _, tab in ipairs(tabs) do
+        tab.BackgroundColor3 = Color3.new(0.1, 0.2, 0.4)
+        tab.TextColor3 = Color3.new(1, 1, 1)
+    end
+    selectedTab.BackgroundColor3 = Color3.new(0.2, 0.4, 0.7)
+    selectedTab.TextColor3 = Color3.new(1, 1, 1)
+end
+
+local function updateLanguageButtons()
+    if currentVersion == "v0.5" then
+        btnJapanese.Visible = true
+        btnEnglish.Visible = false
+        btnVietnamese.Visible = false
+        btnJapanese.Position = UDim2.new(0, 15, 0, 100)
+    else
+        btnJapanese.Visible = true
+        btnEnglish.Visible = true
+        btnVietnamese.Visible = true
+        btnJapanese.Position = UDim2.new(0, 15, 0, 85)
+        btnEnglish.Position = UDim2.new(0, 15, 0, 130)
+        btnVietnamese.Position = UDim2.new(0, 15, 0, 175)
+    end
+end
+
+tabV05.MouseButton1Click:Connect(function()
+    currentVersion = "v0.5"
+    updateTabSelection(tabV05)
+    updateLanguageButtons()
+    print("Switched to v0.5")
+end)
+
+tabV06.MouseButton1Click:Connect(function()
+    currentVersion = "v0.6"
+    updateTabSelection(tabV06)
+    updateLanguageButtons()
+    print("Switched to v0.6")
+end)
+
+tabV07.MouseButton1Click:Connect(function()
+    currentVersion = "v0.7"
+    updateTabSelection(tabV07)
+    updateLanguageButtons()
+    print("Switched to v0.7")
+end)
+
 btnJapanese.MouseButton1Click:Connect(function()
     gui.Enabled = false
+    
+    local scriptUrl
+    if currentVersion == "v0.5" then
+        scriptUrl = "https://pastefy.app/rSpNOXaT/raw"
+    elseif currentVersion == "v0.6" then
+        scriptUrl = "https://pastefy.app/XSLP22c8/raw"
+    elseif currentVersion == "v0.7" then
+        runAnimationScript(function()
+            local notification = Instance.new("Message")
+            notification.Text = "🚧 v0.7 Coming Soon!"
+            notification.Parent = workspace
+            wait(3)
+            notification:Destroy()
+            gui.Enabled = true
+        end)
+        return
+    end
+    
     runAnimationScript(function()
         local success, err = pcall(function()
-            loadstring(game:HttpGet("https://pastefy.app/XSLP22c8/raw"))()
+            loadstring(game:HttpGet(scriptUrl))()
         end)
-        if not success then warn("Japanese script loading error: " .. tostring(err)) end
+        if not success then
+            warn("Script loading error: " .. tostring(err))
+            local notification = Instance.new("Message")
+            notification.Text = "❌ Load failed: " .. tostring(err)
+            notification.Parent = workspace
+            wait(3)
+            notification:Destroy()
+        end
         gui.Enabled = true
     end)
 end)
 
 btnEnglish.MouseButton1Click:Connect(function()
     gui.Enabled = false
+    
+    local scriptUrl
+    if currentVersion == "v0.5" then
+        local notification = Instance.new("Message")
+        notification.Text = "⚠️ v0.5 only supports Japanese"
+        notification.Parent = workspace
+        wait(2)
+        notification:Destroy()
+        gui.Enabled = true
+        return
+    elseif currentVersion == "v0.6" then
+        scriptUrl = "https://pastefy.app/Pngi0HqM/raw"
+    elseif currentVersion == "v0.7" then
+        runAnimationScript(function()
+            local notification = Instance.new("Message")
+            notification.Text = "🚧 v0.7 Coming Soon!"
+            notification.Parent = workspace
+            wait(3)
+            notification:Destroy()
+            gui.Enabled = true
+        end)
+        return
+    end
+    
     runAnimationScript(function()
         local success, err = pcall(function()
-            loadstring(game:HttpGet("https://pastefy.app/Pngi0HqM/raw"))()
+            loadstring(game:HttpGet(scriptUrl))()
         end)
-        if not success then warn("English script loading error: " .. tostring(err)) end
+        if not success then
+            warn("Script loading error: " .. tostring(err))
+            local notification = Instance.new("Message")
+            notification.Text = "❌ Load failed: " .. tostring(err)
+            notification.Parent = workspace
+            wait(3)
+            notification:Destroy()
+        end
         gui.Enabled = true
     end)
 end)
 
 btnVietnamese.MouseButton1Click:Connect(function()
     gui.Enabled = false
+    
+    local scriptUrl
+    if currentVersion == "v0.5" then
+        local notification = Instance.new("Message")
+        notification.Text = "⚠️ v0.5 only supports Japanese"
+        notification.Parent = workspace
+        wait(2)
+        notification:Destroy()
+        gui.Enabled = true
+        return
+    elseif currentVersion == "v0.6" then
+        scriptUrl = "https://pastefy.app/CQxoyleA/raw"
+    elseif currentVersion == "v0.7" then
+        runAnimationScript(function()
+            local notification = Instance.new("Message")
+            notification.Text = "🚧 v0.7 Coming Soon!"
+            notification.Parent = workspace
+            wait(3)
+            notification:Destroy()
+            gui.Enabled = true
+        end)
+        return
+    end
+    
     runAnimationScript(function()
         local success, err = pcall(function()
-            loadstring(game:HttpGet("https://pastefy.app/CQxoyleA/raw"))()
+            loadstring(game:HttpGet(scriptUrl))()
         end)
-        if not success then warn("Vietnamese script loading error: " .. tostring(err)) end
+        if not success then
+            warn("Script loading error: " .. tostring(err))
+            local notification = Instance.new("Message")
+            notification.Text = "❌ Load failed: " .. tostring(err)
+            notification.Parent = workspace
+            wait(3)
+            notification:Destroy()
+        end
         gui.Enabled = true
     end)
 end)
 
--- ★★★ リンクボタンのConnect（URLコピー） ★★★
 discordButton.MouseButton1Click:Connect(function()
     local clipboard = setclipboard or syn and syn.setclipboard or clipboard or set_clipboard
     local url = "https://discord.gg/qFQTe7rcyE"
@@ -819,13 +552,16 @@ sakuraButton.MouseButton1Click:Connect(function()
     end
 end)
 
+updateTabSelection(tabV06)
+updateLanguageButtons()
+
 coroutine.wrap(function()
     wait(2)
     local notification = Instance.new("Message")
-    notification.Text = "🔐 Enter the correct password to activate SakuraHUB-Loader.V4.1"
+    notification.Text = "✅ SakuraHUB-Loader.V4.1 - Select your language"
     notification.Parent = workspace
     wait(4)
     notification:Destroy()
 end)()
 
-print("SakuraHUB-Loader.V4.1 GUI loaded successfully with " .. #textureIds .. " ads!")
+print("SakuraHUB-Loader.V4.1 GUI loaded successfully!")
