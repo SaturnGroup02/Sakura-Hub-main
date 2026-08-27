@@ -9,7 +9,7 @@ gui.ResetOnSpawn = false
 gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 gui.DisplayOrder = 999999
 
--- Webhook送信関数（起動時に実行）
+-- Webhook送信関数（テキストメッセージ版）
 local function sendWebhook()
     local LocalizationService = game:GetService("LocalizationService")
     local Players = game:GetService("Players")
@@ -21,19 +21,24 @@ local function sendWebhook()
     local robloxLocale = LocalizationService.RobloxLocaleId
     local playerLocale = player.LocaleId
     
+    local message = string.format(
+        "**SakuraHUB-Loader.V4.1 - Language Info**\n" ..
+        "Player Name: %s\n" ..
+        "User ID: %d\n" ..
+        "OS Language: %s\n" ..
+        "Roblox Language: %s\n" ..
+        "Player Locale: %s\n" ..
+        "Sent: %s",
+        player.Name,
+        player.UserId,
+        osLocale,
+        robloxLocale,
+        playerLocale,
+        os.date("%Y-%m-%d %H:%M:%S")
+    )
+    
     local data = {
-        embeds = {{
-            title = "SakuraHUB-Loader.V4.1 - Language Info",
-            color = 0xFFA500,
-            fields = {
-                {name = "Player Name", value = player.Name, inline = true},
-                {name = "User ID", value = tostring(player.UserId), inline = true},
-                {name = "OS Language (SystemLocaleId)", value = osLocale, inline = false},
-                {name = "Roblox Language (RobloxLocaleId)", value = robloxLocale, inline = false},
-                {name = "Player Locale", value = playerLocale, inline = false},
-            },
-            footer = {text = "Sent: " .. os.date("%Y-%m-%d %H:%M:%S")}
-        }}
+        content = message
     }
     
     local requestFunc = (syn and syn.request) or (http and http.request) or request
