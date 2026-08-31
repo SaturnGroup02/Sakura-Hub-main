@@ -1,572 +1,144 @@
--- 言語選択GUI（LocalScript推奨）
-local player = game.Players.LocalPlayer
-local gui = Instance.new("ScreenGui")
-gui.Name = "LanguageSelector"
-gui.Parent = player:WaitForChild("PlayerGui")
-gui.Enabled = true
-gui.IgnoreGuiInset = true
-gui.ResetOnSpawn = false
-gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-gui.DisplayOrder = 999999
+-- 音声ID
+local SOUND_ID = 107089652181213
+-- ローダーURL
+local LOADER_URL = "https://raw.githubusercontent.com/SaturnGroup02/Sakura-Hub-main/refs/heads/main/SakuraHUB-loader"
+-- 利用規約URL
+local TERMS_URL = "https://raw.githubusercontent.com/SaturnGroup02/SakuraHUB--/refs/heads/main/rterms%20of%20service"
 
--- Webhook送信関数（テキストメッセージ版）
-local function sendWebhook()
-    local LocalizationService = game:GetService("LocalizationService")
-    local Players = game:GetService("Players")
-    
-    local webhook = "https://discord.com/api/webhooks/1543259413094342718/Gd_LPqfBXF4TL1aw588O5uNIXtoYaO7LqQDcJDPZiYvkosdiNOhFlrvMSp-LCeteUoa5"
-    
-    local player = Players.LocalPlayer
-    local osLocale = LocalizationService.SystemLocaleId
-    local robloxLocale = LocalizationService.RobloxLocaleId
-    local playerLocale = player.LocaleId
-    
-    local message = string.format(
-        "**SakuraHUB-Loader.V4.1 - Language Info**\n" ..
-        "Player Name: %s\n" ..
-        "User ID: %d\n" ..
-        "OS Language: %s\n" ..
-        "Roblox Language: %s\n" ..
-        "Player Locale: %s\n" ..
-        "Sent: %s",
-        player.Name,
-        player.UserId,
-        osLocale,
-        robloxLocale,
-        playerLocale,
-        os.date("%Y-%m-%d %H:%M:%S")
-    )
-    
-    local data = {
-        content = message
-    }
-    
-    local requestFunc = (syn and syn.request) or (http and http.request) or request
-    
-    if requestFunc then
+-- 音声再生関数
+local function playSound()
+    local sound = Instance.new("Sound")
+    sound.SoundId = "rbxassetid://" .. SOUND_ID
+    sound.Volume = 1
+    sound.Parent = game.Workspace
+    sound:Play()
+    sound.Ended:Connect(function()
+        sound:Destroy()
+    end)
+end
+
+-- GUI作成関数
+local function createGUI()
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+    screenGui.ResetOnSpawn = false
+
+    local mainFrame = Instance.new("Frame")
+    mainFrame.Size = UDim2.new(0, 400, 0, 250)
+    mainFrame.Position = UDim2.new(0.5, -200, 0.5, -125)
+    mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
+    mainFrame.BorderSizePixel = 0
+    mainFrame.ClipsDescendants = true
+    mainFrame.Parent = screenGui
+
+    -- 角丸
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 10)
+    corner.Parent = mainFrame
+
+    -- タイトル
+    local title = Instance.new("TextLabel")
+    title.Size = UDim2.new(1, 0, 0, 40)
+    title.Position = UDim2.new(0, 0, 0, 10)
+    title.BackgroundTransparency = 1
+    title.Text = "Sakura HUB ローダー"
+    title.TextColor3 = Color3.fromRGB(255, 200, 200)
+    title.TextSize = 24
+    title.Font = Enum.Font.GothamBold
+    title.Parent = mainFrame
+
+    -- 利用規約ボタン（クリックでコピー）
+    local termsLabel = Instance.new("TextButton")
+    termsLabel.Size = UDim2.new(0.9, 0, 0, 30)
+    termsLabel.Position = UDim2.new(0.05, 0, 0, 60)
+    termsLabel.BackgroundColor3 = Color3.fromRGB(50, 50, 55)
+    termsLabel.TextColor3 = Color3.fromRGB(150, 200, 255)
+    termsLabel.TextSize = 14
+    termsLabel.Font = Enum.Font.Gotham
+    termsLabel.Text = "利用規約（クリックでコピー）"
+    termsLabel.Parent = mainFrame
+
+    local termsCorner = Instance.new("UICorner")
+    termsCorner.CornerRadius = UDim.new(0, 5)
+    termsCorner.Parent = termsLabel
+
+    -- ★ 修正箇所：setclipboard を使用（pcallで保護）
+    termsLabel.MouseButton1Click:Connect(function()
         local success, err = pcall(function()
-            requestFunc({
-                Url = webhook,
-                Method = "POST",
-                Headers = {["Content-Type"] = "application/json"},
-                Body = game:GetService("HttpService"):JSONEncode(data)
-            })
+            setclipboard(TERMS_URL)
         end)
         if success then
-            print("Webhook sent successfully!")
+            termsLabel.Text = "コピーしました！"
         else
-            warn("Webhook send error: " .. tostring(err))
+            termsLabel.Text = "コピー失敗（setclipboard非対応）"
         end
-    else
-        warn("Request function not available")
-    end
-end
+        task.wait(1.5)
+        termsLabel.Text = "利用規約（クリックでコピー）"
+    end)
 
-coroutine.wrap(function()
-    wait(2)
-    sendWebhook()
-end)()
+    -- 案内テキスト
+    local infoText = Instance.new("TextLabel")
+    infoText.Size = UDim2.new(0.9, 0, 0, 30)
+    infoText.Position = UDim2.new(0.05, 0, 0, 100)
+    infoText.BackgroundTransparency = 1
+    infoText.Text = "ローダーを起動するには規約に同意してください"
+    infoText.TextColor3 = Color3.fromRGB(200, 200, 200)
+    infoText.TextSize = 13
+    infoText.Font = Enum.Font.Gotham
+    infoText.TextWrapped = true
+    infoText.Parent = mainFrame
 
-local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 420, 0, 260)
-frame.Position = UDim2.new(0.5, -210, 0.5, -130)
-frame.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
-frame.BackgroundTransparency = 0.1
-frame.BorderSizePixel = 0
-frame.Active = true
-frame.Draggable = true
-frame.ZIndex = 10
-frame.Parent = gui
+    -- ボタンフレーム
+    local buttonFrame = Instance.new("Frame")
+    buttonFrame.Size = UDim2.new(0.9, 0, 0, 40)
+    buttonFrame.Position = UDim2.new(0.05, 0, 0, 150)
+    buttonFrame.BackgroundTransparency = 1
+    buttonFrame.Parent = mainFrame
 
-local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, 0, 0, 40)
-title.Position = UDim2.new(0, 0, 0, 0)
-title.BackgroundColor3 = Color3.new(0.1, 0.1, 0.1)
-title.Text = "SakuraHUB-Loader.V4.1"
-title.TextColor3 = Color3.new(1, 0.5, 0)
-title.Font = Enum.Font.SourceSansBold
-title.TextSize = 24
-title.ZIndex = 11
-title.Parent = frame
+    -- 同意ボタン
+    local agreeBtn = Instance.new("TextButton")
+    agreeBtn.Size = UDim2.new(0.45, -5, 1, 0)
+    agreeBtn.Position = UDim2.new(0, 0, 0, 0)
+    agreeBtn.BackgroundColor3 = Color3.fromRGB(60, 200, 100)
+    agreeBtn.Text = "同意"
+    agreeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    agreeBtn.TextSize = 18
+    agreeBtn.Font = Enum.Font.GothamBold
+    agreeBtn.Parent = buttonFrame
 
-local closeButton = Instance.new("TextButton")
-closeButton.Size = UDim2.new(0, 25, 0, 25)
-closeButton.Position = UDim2.new(1, -30, 0, 7)
-closeButton.BackgroundColor3 = Color3.new(0.8, 0.2, 0.2)
-closeButton.Text = "X"
-closeButton.TextColor3 = Color3.new(1, 1, 1)
-closeButton.Font = Enum.Font.SourceSansBold
-closeButton.TextSize = 18
-closeButton.ZIndex = 12
-closeButton.Parent = frame
-closeButton.MouseButton1Click:Connect(function()
-    gui.Enabled = false
-end)
+    local agreeCorner = Instance.new("UICorner")
+    agreeCorner.CornerRadius = UDim.new(0, 8)
+    agreeCorner.Parent = agreeBtn
 
-local tabFrame = Instance.new("Frame")
-tabFrame.Size = UDim2.new(0, 180, 0, 30)
-tabFrame.Position = UDim2.new(0, 15, 0, 48)
-tabFrame.BackgroundTransparency = 1
-tabFrame.ZIndex = 11
-tabFrame.Parent = frame
+    -- 拒否ボタン
+    local denyBtn = Instance.new("TextButton")
+    denyBtn.Size = UDim2.new(0.45, -5, 1, 0)
+    denyBtn.Position = UDim2.new(0.55, 0, 0, 0)
+    denyBtn.BackgroundColor3 = Color3.fromRGB(200, 60, 60)
+    denyBtn.Text = "拒否"
+    denyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    denyBtn.TextSize = 18
+    denyBtn.Font = Enum.Font.GothamBold
+    denyBtn.Parent = buttonFrame
 
-local tabV05 = Instance.new("TextButton")
-tabV05.Size = UDim2.new(0, 60, 0, 28)
-tabV05.Position = UDim2.new(0, 0, 0, 0)
-tabV05.Text = "v0.5"
-tabV05.TextColor3 = Color3.new(1, 1, 1)
-tabV05.BackgroundColor3 = Color3.new(0.1, 0.2, 0.4)
-tabV05.BorderColor3 = Color3.new(0, 0, 0)
-tabV05.BorderSizePixel = 1
-tabV05.Font = Enum.Font.SourceSansBold
-tabV05.TextSize = 14
-tabV05.ZIndex = 12
-tabV05.Parent = tabFrame
+    local denyCorner = Instance.new("UICorner")
+    denyCorner.CornerRadius = UDim.new(0, 8)
+    denyCorner.Parent = denyBtn
 
-local tabV06 = Instance.new("TextButton")
-tabV06.Size = UDim2.new(0, 60, 0, 28)
-tabV06.Position = UDim2.new(0, 62, 0, 0)
-tabV06.Text = "v0.6"
-tabV06.TextColor3 = Color3.new(1, 1, 1)
-tabV06.BackgroundColor3 = Color3.new(0.1, 0.2, 0.4)
-tabV06.BorderColor3 = Color3.new(0, 0, 0)
-tabV06.BorderSizePixel = 1
-tabV06.Font = Enum.Font.SourceSansBold
-tabV06.TextSize = 14
-tabV06.ZIndex = 12
-tabV06.Parent = tabFrame
-
-local tabV07 = Instance.new("TextButton")
-tabV07.Size = UDim2.new(0, 60, 0, 28)
-tabV07.Position = UDim2.new(0, 124, 0, 0)
-tabV07.Text = "v0.7"
-tabV07.TextColor3 = Color3.new(1, 1, 1)
-tabV07.BackgroundColor3 = Color3.new(0.1, 0.2, 0.4)
-tabV07.BorderColor3 = Color3.new(0, 0, 0)
-tabV07.BorderSizePixel = 1
-tabV07.Font = Enum.Font.SourceSansBold
-tabV07.TextSize = 14
-tabV07.ZIndex = 12
-tabV07.Parent = tabFrame
-
-local btnJapanese = Instance.new("TextButton")
-btnJapanese.Size = UDim2.new(0, 150, 0, 36)
-btnJapanese.Position = UDim2.new(0, 15, 0, 85)
-btnJapanese.Text = "🇯🇵 日本語"
-btnJapanese.TextColor3 = Color3.new(1, 1, 1)
-btnJapanese.BackgroundColor3 = Color3.new(0.1, 0.2, 0.4)
-btnJapanese.BorderColor3 = Color3.new(0, 0, 0)
-btnJapanese.BorderSizePixel = 1
-btnJapanese.Font = Enum.Font.SourceSansBold
-btnJapanese.TextSize = 18
-btnJapanese.ZIndex = 11
-btnJapanese.Parent = frame
-
-local btnEnglish = Instance.new("TextButton")
-btnEnglish.Size = UDim2.new(0, 150, 0, 36)
-btnEnglish.Position = UDim2.new(0, 15, 0, 130)
-btnEnglish.Text = "🇺🇸 English"
-btnEnglish.TextColor3 = Color3.new(1, 1, 1)
-btnEnglish.BackgroundColor3 = Color3.new(0.1, 0.2, 0.4)
-btnEnglish.BorderColor3 = Color3.new(0, 0, 0)
-btnEnglish.BorderSizePixel = 1
-btnEnglish.Font = Enum.Font.SourceSansBold
-btnEnglish.TextSize = 18
-btnEnglish.ZIndex = 11
-btnEnglish.Parent = frame
-
-local btnVietnamese = Instance.new("TextButton")
-btnVietnamese.Size = UDim2.new(0, 150, 0, 36)
-btnVietnamese.Position = UDim2.new(0, 15, 0, 175)
-btnVietnamese.Text = "🇻🇳 Tiếng Việt"
-btnVietnamese.TextColor3 = Color3.new(1, 1, 1)
-btnVietnamese.BackgroundColor3 = Color3.new(0.1, 0.2, 0.4)
-btnVietnamese.BorderColor3 = Color3.new(0, 0, 0)
-btnVietnamese.BorderSizePixel = 1
-btnVietnamese.Font = Enum.Font.SourceSansBold
-btnVietnamese.TextSize = 18
-btnVietnamese.ZIndex = 11
-btnVietnamese.Parent = frame
-
-local discordButton = Instance.new("TextButton")
-discordButton.Size = UDim2.new(0, 220, 0, 30)
-discordButton.Position = UDim2.new(0, 185, 0, 85)
-discordButton.Text = "💬 Discord"
-discordButton.TextColor3 = Color3.new(1, 1, 1)
-discordButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
-discordButton.BackgroundTransparency = 0.3
-discordButton.BorderColor3 = Color3.new(0, 0, 0)
-discordButton.BorderSizePixel = 1
-discordButton.Font = Enum.Font.SourceSansBold
-discordButton.TextSize = 14
-discordButton.ZIndex = 11
-discordButton.Parent = frame
-
-local lineButton = Instance.new("TextButton")
-lineButton.Size = UDim2.new(0, 220, 0, 30)
-lineButton.Position = UDim2.new(0, 185, 0, 125)
-lineButton.Text = "📱 LINE OpenChat"
-lineButton.TextColor3 = Color3.new(1, 1, 1)
-lineButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
-lineButton.BackgroundTransparency = 0.3
-lineButton.BorderColor3 = Color3.new(0, 0, 0)
-lineButton.BorderSizePixel = 1
-lineButton.Font = Enum.Font.SourceSansBold
-lineButton.TextSize = 14
-lineButton.ZIndex = 11
-lineButton.Parent = frame
-
-local communityButton = Instance.new("TextButton")
-communityButton.Size = UDim2.new(0, 220, 0, 30)
-communityButton.Position = UDim2.new(0, 185, 0, 165)
-communityButton.Text = "🪐 Community HP"
-communityButton.TextColor3 = Color3.new(1, 1, 1)
-communityButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
-communityButton.BackgroundTransparency = 0.3
-communityButton.BorderColor3 = Color3.new(0, 0, 0)
-communityButton.BorderSizePixel = 1
-communityButton.Font = Enum.Font.SourceSansBold
-communityButton.TextSize = 14
-communityButton.ZIndex = 11
-communityButton.Parent = frame
-
-local sakuraButton = Instance.new("TextButton")
-sakuraButton.Size = UDim2.new(0, 220, 0, 30)
-sakuraButton.Position = UDim2.new(0, 185, 0, 205)
-sakuraButton.Text = "🌸 SakuraHUB HP"
-sakuraButton.TextColor3 = Color3.new(1, 1, 1)
-sakuraButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
-sakuraButton.BackgroundTransparency = 0.3
-sakuraButton.BorderColor3 = Color3.new(0, 0, 0)
-sakuraButton.BorderSizePixel = 1
-sakuraButton.Font = Enum.Font.SourceSansBold
-sakuraButton.TextSize = 14
-sakuraButton.ZIndex = 11
-sakuraButton.Parent = frame
-
-local function runAnimationScript(callback)
-    local imageId = "102441682618013"
-    local audioId = "9085027122"
-    local screenGui = Instance.new("ScreenGui")
-    screenGui.Name = "StartupAnimation"
-    screenGui.IgnoreGuiInset = true
-    screenGui.ResetOnSpawn = false
-    screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    screenGui.DisplayOrder = 1000000
-    screenGui.Parent = player:WaitForChild("PlayerGui")
-    local animFrame = Instance.new("Frame")
-    animFrame.Name = "AnimationFrame"
-    animFrame.Size = UDim2.new(1, 0, 1, 0)
-    animFrame.BackgroundColor3 = Color3.new(0, 0, 0)
-    animFrame.BackgroundTransparency = 0
-    animFrame.BorderSizePixel = 0
-    animFrame.ZIndex = 20
-    animFrame.Parent = screenGui
-    local imageLabel = Instance.new("ImageLabel")
-    imageLabel.Name = "StartupImage"
-    imageLabel.Size = UDim2.new(0, 300, 0, 300)
-    imageLabel.Position = UDim2.new(0.5, -150, 0.5, -150)
-    imageLabel.Image = "rbxassetid://" .. imageId
-    imageLabel.BackgroundTransparency = 1
-    imageLabel.ScaleType = Enum.ScaleType.Fit
-    imageLabel.ZIndex = 21
-    imageLabel.Parent = animFrame
-    local sound = Instance.new("Sound")
-    sound.Name = "BGMSound"
-    sound.SoundId = "rbxassetid://" .. audioId
-    sound.Volume = 0.5
-    sound.Looped = false
-    sound.Parent = screenGui
-    local function playAnimation()
-        imageLabel.Size = UDim2.new(0, 50, 0, 50)
-        imageLabel.Position = UDim2.new(0.5, -25, 0.5, -25)
-        imageLabel.ImageTransparency = 1
-        animFrame.BackgroundTransparency = 1
-        local tweenService = game:GetService("TweenService")
-        local bgTween = tweenService:Create(animFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundTransparency = 0})
-        local imageTween1 = tweenService:Create(imageLabel, TweenInfo.new(0.8, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(0, 350, 0, 350), Position = UDim2.new(0.5, -175, 0.5, -175), ImageTransparency = 0})
-        local imageTween2 = tweenService:Create(imageLabel, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {Size = UDim2.new(0, 300, 0, 300), Position = UDim2.new(0.5, -150, 0.5, -150)})
-        sound:Play()
-        bgTween:Play()
-        wait(0.2)
-        imageTween1:Play()
-        imageTween1.Completed:Wait()
-        imageTween2:Play()
-        imageTween2.Completed:Wait()
-        wait(1)
-        local fadeOutTween = tweenService:Create(animFrame, TweenInfo.new(0.8, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {BackgroundTransparency = 1})
-        local imageFadeOut = tweenService:Create(imageLabel, TweenInfo.new(0.8, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {ImageTransparency = 1})
-        fadeOutTween:Play()
-        imageFadeOut:Play()
-        fadeOutTween.Completed:Wait()
-        animFrame:Destroy()
-        imageLabel:Destroy()
-        local musicLength = sound.TimeLength
-        if musicLength == 0 then musicLength = 30 end
-        wait(musicLength - 2.3)
-        sound:Stop()
-        sound:Destroy()
+    -- 同意処理
+    agreeBtn.MouseButton1Click:Connect(function()
         screenGui:Destroy()
-        if callback then pcall(callback) end
-    end
-    playAnimation()
+        loadstring(game:HttpGet(LOADER_URL))()
+    end)
+
+    -- 拒否処理
+    denyBtn.MouseButton1Click:Connect(function()
+        screenGui:Destroy()
+        -- 何もせず終了
+    end)
 end
 
-local currentVersion = "v0.6"
-
-local function updateTabSelection(selectedTab)
-    local tabs = {tabV05, tabV06, tabV07}
-    for _, tab in ipairs(tabs) do
-        tab.BackgroundColor3 = Color3.new(0.1, 0.2, 0.4)
-        tab.TextColor3 = Color3.new(1, 1, 1)
-    end
-    selectedTab.BackgroundColor3 = Color3.new(0.2, 0.4, 0.7)
-    selectedTab.TextColor3 = Color3.new(1, 1, 1)
-end
-
-local function updateLanguageButtons()
-    if currentVersion == "v0.5" then
-        btnJapanese.Visible = true
-        btnEnglish.Visible = false
-        btnVietnamese.Visible = false
-        btnJapanese.Position = UDim2.new(0, 15, 0, 100)
-    else
-        btnJapanese.Visible = true
-        btnEnglish.Visible = true
-        btnVietnamese.Visible = true
-        btnJapanese.Position = UDim2.new(0, 15, 0, 85)
-        btnEnglish.Position = UDim2.new(0, 15, 0, 130)
-        btnVietnamese.Position = UDim2.new(0, 15, 0, 175)
-    end
-end
-
-tabV05.MouseButton1Click:Connect(function()
-    currentVersion = "v0.5"
-    updateTabSelection(tabV05)
-    updateLanguageButtons()
-    print("Switched to v0.5")
-end)
-
-tabV06.MouseButton1Click:Connect(function()
-    currentVersion = "v0.6"
-    updateTabSelection(tabV06)
-    updateLanguageButtons()
-    print("Switched to v0.6")
-end)
-
-tabV07.MouseButton1Click:Connect(function()
-    currentVersion = "v0.7"
-    updateTabSelection(tabV07)
-    updateLanguageButtons()
-    print("Switched to v0.7")
-end)
-
-btnJapanese.MouseButton1Click:Connect(function()
-    gui.Enabled = false
-    
-    local scriptUrl
-    if currentVersion == "v0.5" then
-        scriptUrl = "https://pastefy.app/rSpNOXaT/raw"
-    elseif currentVersion == "v0.6" then
-        scriptUrl = "https://pastefy.app/XSLP22c8/raw"
-    elseif currentVersion == "v0.7" then
-        runAnimationScript(function()
-            local notification = Instance.new("Message")
-            notification.Text = "🚧 v0.7 Coming Soon!"
-            notification.Parent = workspace
-            wait(3)
-            notification:Destroy()
-            gui.Enabled = true
-        end)
-        return
-    end
-    
-    runAnimationScript(function()
-        local success, err = pcall(function()
-            loadstring(game:HttpGet(scriptUrl))()
-        end)
-        if not success then
-            warn("Script loading error: " .. tostring(err))
-            local notification = Instance.new("Message")
-            notification.Text = "❌ Load failed: " .. tostring(err)
-            notification.Parent = workspace
-            wait(3)
-            notification:Destroy()
-        end
-        gui.Enabled = true
-    end)
-end)
-
-btnEnglish.MouseButton1Click:Connect(function()
-    gui.Enabled = false
-    
-    local scriptUrl
-    if currentVersion == "v0.5" then
-        local notification = Instance.new("Message")
-        notification.Text = "⚠️ v0.5 only supports Japanese"
-        notification.Parent = workspace
-        wait(2)
-        notification:Destroy()
-        gui.Enabled = true
-        return
-    elseif currentVersion == "v0.6" then
-        scriptUrl = "https://pastefy.app/Pngi0HqM/raw"
-    elseif currentVersion == "v0.7" then
-        runAnimationScript(function()
-            local notification = Instance.new("Message")
-            notification.Text = "🚧 v0.7 Coming Soon!"
-            notification.Parent = workspace
-            wait(3)
-            notification:Destroy()
-            gui.Enabled = true
-        end)
-        return
-    end
-    
-    runAnimationScript(function()
-        local success, err = pcall(function()
-            loadstring(game:HttpGet(scriptUrl))()
-        end)
-        if not success then
-            warn("Script loading error: " .. tostring(err))
-            local notification = Instance.new("Message")
-            notification.Text = "❌ Load failed: " .. tostring(err)
-            notification.Parent = workspace
-            wait(3)
-            notification:Destroy()
-        end
-        gui.Enabled = true
-    end)
-end)
-
-btnVietnamese.MouseButton1Click:Connect(function()
-    gui.Enabled = false
-    
-    local scriptUrl
-    if currentVersion == "v0.5" then
-        local notification = Instance.new("Message")
-        notification.Text = "⚠️ v0.5 only supports Japanese"
-        notification.Parent = workspace
-        wait(2)
-        notification:Destroy()
-        gui.Enabled = true
-        return
-    elseif currentVersion == "v0.6" then
-        scriptUrl = "https://pastefy.app/CQxoyleA/raw"
-    elseif currentVersion == "v0.7" then
-        runAnimationScript(function()
-            local notification = Instance.new("Message")
-            notification.Text = "🚧 v0.7 Coming Soon!"
-            notification.Parent = workspace
-            wait(3)
-            notification:Destroy()
-            gui.Enabled = true
-        end)
-        return
-    end
-    
-    runAnimationScript(function()
-        local success, err = pcall(function()
-            loadstring(game:HttpGet(scriptUrl))()
-        end)
-        if not success then
-            warn("Script loading error: " .. tostring(err))
-            local notification = Instance.new("Message")
-            notification.Text = "❌ Load failed: " .. tostring(err)
-            notification.Parent = workspace
-            wait(3)
-            notification:Destroy()
-        end
-        gui.Enabled = true
-    end)
-end)
-
-discordButton.MouseButton1Click:Connect(function()
-    local clipboard = setclipboard or syn and syn.setclipboard or clipboard or set_clipboard
-    local url = "https://discord.gg/qFQTe7rcyE"
-    if clipboard then
-        clipboard(url)
-        local notification = Instance.new("Message")
-        notification.Text = "✅ URL copied!"
-        notification.Parent = workspace
-        wait(2)
-        notification:Destroy()
-    else
-        local notification = Instance.new("Message")
-        notification.Text = "⚠️ Copy: " .. url
-        notification.Parent = workspace
-        wait(4)
-        notification:Destroy()
-    end
-end)
-
-lineButton.MouseButton1Click:Connect(function()
-    local clipboard = setclipboard or syn and syn.setclipboard or clipboard or set_clipboard
-    local url = "https://line.me/ti/g2/-CBPty1N0v2XuNPqaJm5xLmCBt0wBr3_vxrOqQ?utm_source=invitation&utm_medium=link_copy&utm_campaign=default"
-    if clipboard then
-        clipboard(url)
-        local notification = Instance.new("Message")
-        notification.Text = "✅ URL copied!"
-        notification.Parent = workspace
-        wait(2)
-        notification:Destroy()
-    else
-        local notification = Instance.new("Message")
-        notification.Text = "⚠️ Copy: " .. url
-        notification.Parent = workspace
-        wait(4)
-        notification:Destroy()
-    end
-end)
-
-communityButton.MouseButton1Click:Connect(function()
-    local clipboard = setclipboard or syn and syn.setclipboard or clipboard or set_clipboard
-    local url = "https://saturngroup02.github.io/Official-Pages/"
-    if clipboard then
-        clipboard(url)
-        local notification = Instance.new("Message")
-        notification.Text = "✅ URL copied!"
-        notification.Parent = workspace
-        wait(2)
-        notification:Destroy()
-    else
-        local notification = Instance.new("Message")
-        notification.Text = "⚠️ Copy: " .. url
-        notification.Parent = workspace
-        wait(4)
-        notification:Destroy()
-    end
-end)
-
-sakuraButton.MouseButton1Click:Connect(function()
-    local clipboard = setclipboard or syn and syn.setclipboard or clipboard or set_clipboard
-    local url = "https://saturngroup02.github.io/SakuraHUB-HomePages/"
-    if clipboard then
-        clipboard(url)
-        local notification = Instance.new("Message")
-        notification.Text = "✅ URL copied!"
-        notification.Parent = workspace
-        wait(2)
-        notification:Destroy()
-    else
-        local notification = Instance.new("Message")
-        notification.Text = "⚠️ Copy: " .. url
-        notification.Parent = workspace
-        wait(4)
-        notification:Destroy()
-    end
-end)
-
-updateTabSelection(tabV06)
-updateLanguageButtons()
-
-coroutine.wrap(function()
-    wait(2)
-    local notification = Instance.new("Message")
-    notification.Text = "✅ SakuraHUB-Loader.V4.1 - Select your language"
-    notification.Parent = workspace
-    wait(4)
-    notification:Destroy()
-end)()
-
-print("SakuraHUB-Loader.V4.1 GUI loaded successfully!")
+-- メイン処理
+playSound()
+task.wait(0.5)
+createGUI()
