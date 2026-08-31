@@ -312,6 +312,92 @@ local function runAnimationScript(callback)
     playAnimation()
 end
 
+-- TTS関数（日本語スクリプト読み込み後用）
+local function speakOnce(text, lang)
+    task.spawn(function()
+        local success, result = pcall(function()
+            local HttpService = game:GetService("HttpService")
+            local SoundService = game:GetService("SoundService")
+            
+            local encoded = HttpService:UrlEncode(text)
+            local url = "https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=" .. lang .. "&q=" .. encoded
+
+            local audioData
+            if typeof(request) == "function" or (syn and syn.request) then
+                local reqFunc = request or syn.request
+                local response = reqFunc({
+                    Url = url,
+                    Method = "GET"
+                })
+                if response and response.StatusCode == 200 then
+                    audioData = response.Body
+                else
+                    error("HTTP request failed")
+                end
+            else
+                audioData = game:HttpGet(url)
+            end
+
+            if not audioData or #audioData < 100 then
+                error("Audio data fetch failed")
+            end
+
+            local fileName = "tts_startup_" .. tostring(math.floor(tick() * 1000)) .. ".mp3"
+            
+            local writeOk = pcall(function()
+                writefile(fileName, audioData)
+            end)
+            if not writeOk then
+                error("writefile failed")
+            end
+
+            local assetId = getcustomasset(fileName)
+
+            local sound = Instance.new("Sound")
+            sound.SoundId = assetId
+            sound.Volume = 2
+            sound.Parent = SoundService
+
+            sound:Play()
+            sound.Ended:Wait()
+            sound:Destroy()
+            pcall(delfile, fileName)
+
+            return true
+        end)
+
+        if not success then
+            warn("[TTS Error] " .. tostring(result))
+        end
+    end)
+end
+
+-- スクリプト読み込み + TTS実行関数
+local function loadScriptWithTTS(scriptUrl)
+    gui.Enabled = false
+    
+    runAnimationScript(function()
+        local success, err = pcall(function()
+            loadstring(game:HttpGet(scriptUrl))()
+        end)
+        if not success then
+            warn("Script loading error: " .. tostring(err))
+            local notification = Instance.new("Message")
+            notification.Text = "Load failed: " .. tostring(err)
+            notification.Parent = workspace
+            wait(3)
+            notification:Destroy()
+        end
+        gui.Enabled = true
+        
+        if success then
+            task.wait(2.5)
+            local message = "今回は桜ハブをご利用頂き大変ありがとうございます。もしよろしければ運営コミュニティーにぜひ参加をお願いいたします。ディスコードURL、https://discord.gg/qFQTe7rcyEで参加いただけます"
+            speakOnce(message, "ja")
+        end
+    end)
+end
+
 local currentVersion = "v0.6"
 
 local function updateTabSelection(selectedTab)
@@ -362,39 +448,16 @@ tabV07.MouseButton1Click:Connect(function()
 end)
 
 btnJapanese.MouseButton1Click:Connect(function()
-    gui.Enabled = false
-    
     local scriptUrl
     if currentVersion == "v0.5" then
         scriptUrl = "https://pastefy.app/rSpNOXaT/raw"
     elseif currentVersion == "v0.6" then
         scriptUrl = "https://pastefy.app/XSLP22c8/raw"
     elseif currentVersion == "v0.7" then
-        runAnimationScript(function()
-            local notification = Instance.new("Message")
-            notification.Text = "🚧 v0.7 Coming Soon!"
-            notification.Parent = workspace
-            wait(3)
-            notification:Destroy()
-            gui.Enabled = true
-        end)
-        return
+        scriptUrl = "https://raw.githubusercontent.com/SaturnGroup02/Sakurahub-ja-en-vn-123-/refs/heads/main/ja"
     end
     
-    runAnimationScript(function()
-        local success, err = pcall(function()
-            loadstring(game:HttpGet(scriptUrl))()
-        end)
-        if not success then
-            warn("Script loading error: " .. tostring(err))
-            local notification = Instance.new("Message")
-            notification.Text = "❌ Load failed: " .. tostring(err)
-            notification.Parent = workspace
-            wait(3)
-            notification:Destroy()
-        end
-        gui.Enabled = true
-    end)
+    loadScriptWithTTS(scriptUrl)
 end)
 
 btnEnglish.MouseButton1Click:Connect(function()
@@ -403,7 +466,7 @@ btnEnglish.MouseButton1Click:Connect(function()
     local scriptUrl
     if currentVersion == "v0.5" then
         local notification = Instance.new("Message")
-        notification.Text = "⚠️ v0.5 only supports Japanese"
+        notification.Text = "v0.5 only supports Japanese"
         notification.Parent = workspace
         wait(2)
         notification:Destroy()
@@ -414,7 +477,7 @@ btnEnglish.MouseButton1Click:Connect(function()
     elseif currentVersion == "v0.7" then
         runAnimationScript(function()
             local notification = Instance.new("Message")
-            notification.Text = "🚧 v0.7 Coming Soon!"
+            notification.Text = "v0.7 Coming Soon!"
             notification.Parent = workspace
             wait(3)
             notification:Destroy()
@@ -430,7 +493,7 @@ btnEnglish.MouseButton1Click:Connect(function()
         if not success then
             warn("Script loading error: " .. tostring(err))
             local notification = Instance.new("Message")
-            notification.Text = "❌ Load failed: " .. tostring(err)
+            notification.Text = "Load failed: " .. tostring(err)
             notification.Parent = workspace
             wait(3)
             notification:Destroy()
@@ -445,7 +508,7 @@ btnVietnamese.MouseButton1Click:Connect(function()
     local scriptUrl
     if currentVersion == "v0.5" then
         local notification = Instance.new("Message")
-        notification.Text = "⚠️ v0.5 only supports Japanese"
+        notification.Text = "v0.5 only supports Japanese"
         notification.Parent = workspace
         wait(2)
         notification:Destroy()
@@ -456,7 +519,7 @@ btnVietnamese.MouseButton1Click:Connect(function()
     elseif currentVersion == "v0.7" then
         runAnimationScript(function()
             local notification = Instance.new("Message")
-            notification.Text = "🚧 v0.7 Coming Soon!"
+            notification.Text = "v0.7 Coming Soon!"
             notification.Parent = workspace
             wait(3)
             notification:Destroy()
@@ -472,7 +535,7 @@ btnVietnamese.MouseButton1Click:Connect(function()
         if not success then
             warn("Script loading error: " .. tostring(err))
             local notification = Instance.new("Message")
-            notification.Text = "❌ Load failed: " .. tostring(err)
+            notification.Text = "Load failed: " .. tostring(err)
             notification.Parent = workspace
             wait(3)
             notification:Destroy()
@@ -487,13 +550,13 @@ discordButton.MouseButton1Click:Connect(function()
     if clipboard then
         clipboard(url)
         local notification = Instance.new("Message")
-        notification.Text = "✅ URL copied!"
+        notification.Text = "URL copied!"
         notification.Parent = workspace
         wait(2)
         notification:Destroy()
     else
         local notification = Instance.new("Message")
-        notification.Text = "⚠️ Copy: " .. url
+        notification.Text = "Copy: " .. url
         notification.Parent = workspace
         wait(4)
         notification:Destroy()
@@ -506,13 +569,13 @@ lineButton.MouseButton1Click:Connect(function()
     if clipboard then
         clipboard(url)
         local notification = Instance.new("Message")
-        notification.Text = "✅ URL copied!"
+        notification.Text = "URL copied!"
         notification.Parent = workspace
         wait(2)
         notification:Destroy()
     else
         local notification = Instance.new("Message")
-        notification.Text = "⚠️ Copy: " .. url
+        notification.Text = "Copy: " .. url
         notification.Parent = workspace
         wait(4)
         notification:Destroy()
@@ -525,13 +588,13 @@ communityButton.MouseButton1Click:Connect(function()
     if clipboard then
         clipboard(url)
         local notification = Instance.new("Message")
-        notification.Text = "✅ URL copied!"
+        notification.Text = "URL copied!"
         notification.Parent = workspace
         wait(2)
         notification:Destroy()
     else
         local notification = Instance.new("Message")
-        notification.Text = "⚠️ Copy: " .. url
+        notification.Text = "Copy: " .. url
         notification.Parent = workspace
         wait(4)
         notification:Destroy()
@@ -544,13 +607,13 @@ sakuraButton.MouseButton1Click:Connect(function()
     if clipboard then
         clipboard(url)
         local notification = Instance.new("Message")
-        notification.Text = "✅ URL copied!"
+        notification.Text = "URL copied!"
         notification.Parent = workspace
         wait(2)
         notification:Destroy()
     else
         local notification = Instance.new("Message")
-        notification.Text = "⚠️ Copy: " .. url
+        notification.Text = "Copy: " .. url
         notification.Parent = workspace
         wait(4)
         notification:Destroy()
@@ -563,7 +626,7 @@ updateLanguageButtons()
 coroutine.wrap(function()
     wait(2)
     local notification = Instance.new("Message")
-    notification.Text = "✅ SakuraHUB-Loader.V4.1 - Select your language"
+    notification.Text = "SakuraHUB-Loader.V4.1 - Select your language"
     notification.Parent = workspace
     wait(4)
     notification:Destroy()
