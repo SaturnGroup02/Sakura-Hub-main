@@ -24,14 +24,13 @@ local function createGUI()
     screenGui.ResetOnSpawn = false
 
     local mainFrame = Instance.new("Frame")
-    mainFrame.Size = UDim2.new(0, 400, 0, 250)
-    mainFrame.Position = UDim2.new(0.5, -200, 0.5, -125)
+    mainFrame.Size = UDim2.new(0, 400, 0, 280)
+    mainFrame.Position = UDim2.new(0.5, -200, 0.5, -140)
     mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
     mainFrame.BorderSizePixel = 0
     mainFrame.ClipsDescendants = true
     mainFrame.Parent = screenGui
 
-    -- 角丸
     local corner = Instance.new("UICorner")
     corner.CornerRadius = UDim.new(0, 10)
     corner.Parent = mainFrame
@@ -50,7 +49,7 @@ local function createGUI()
     -- 利用規約ボタン（クリックでコピー）
     local termsLabel = Instance.new("TextButton")
     termsLabel.Size = UDim2.new(0.9, 0, 0, 30)
-    termsLabel.Position = UDim2.new(0.05, 0, 0, 60)
+    termsLabel.Position = UDim2.new(0.05, 0, 0, 55)
     termsLabel.BackgroundColor3 = Color3.fromRGB(50, 50, 55)
     termsLabel.TextColor3 = Color3.fromRGB(150, 200, 255)
     termsLabel.TextSize = 14
@@ -62,9 +61,9 @@ local function createGUI()
     termsCorner.CornerRadius = UDim.new(0, 5)
     termsCorner.Parent = termsLabel
 
-    -- ★ 修正箇所：setclipboard を使用（pcallで保護）
+    -- ★ コピー機能：setclipboard を pcall で保護
     termsLabel.MouseButton1Click:Connect(function()
-        local success, err = pcall(function()
+        local success = pcall(function()
             setclipboard(TERMS_URL)
         end)
         if success then
@@ -79,7 +78,7 @@ local function createGUI()
     -- 案内テキスト
     local infoText = Instance.new("TextLabel")
     infoText.Size = UDim2.new(0.9, 0, 0, 30)
-    infoText.Position = UDim2.new(0.05, 0, 0, 100)
+    infoText.Position = UDim2.new(0.05, 0, 0, 95)
     infoText.BackgroundTransparency = 1
     infoText.Text = "ローダーを起動するには規約に同意してください"
     infoText.TextColor3 = Color3.fromRGB(200, 200, 200)
@@ -88,10 +87,22 @@ local function createGUI()
     infoText.TextWrapped = true
     infoText.Parent = mainFrame
 
+    -- ★ キーボード操作の案内
+    local keyHint = Instance.new("TextLabel")
+    keyHint.Size = UDim2.new(0.9, 0, 0, 20)
+    keyHint.Position = UDim2.new(0.05, 0, 0, 128)
+    keyHint.BackgroundTransparency = 1
+    keyHint.Text = "【キーボード操作】 1 = 同意 / 2 = 拒否"
+    keyHint.TextColor3 = Color3.fromRGB(255, 220, 130)
+    keyHint.TextSize = 13
+    keyHint.Font = Enum.Font.GothamMedium
+    keyHint.TextWrapped = true
+    keyHint.Parent = mainFrame
+
     -- ボタンフレーム
     local buttonFrame = Instance.new("Frame")
     buttonFrame.Size = UDim2.new(0.9, 0, 0, 40)
-    buttonFrame.Position = UDim2.new(0.05, 0, 0, 150)
+    buttonFrame.Position = UDim2.new(0.05, 0, 0, 165)
     buttonFrame.BackgroundTransparency = 1
     buttonFrame.Parent = mainFrame
 
@@ -100,7 +111,7 @@ local function createGUI()
     agreeBtn.Size = UDim2.new(0.45, -5, 1, 0)
     agreeBtn.Position = UDim2.new(0, 0, 0, 0)
     agreeBtn.BackgroundColor3 = Color3.fromRGB(60, 200, 100)
-    agreeBtn.Text = "同意"
+    agreeBtn.Text = "同意 [1]"
     agreeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
     agreeBtn.TextSize = 18
     agreeBtn.Font = Enum.Font.GothamBold
@@ -115,7 +126,7 @@ local function createGUI()
     denyBtn.Size = UDim2.new(0.45, -5, 1, 0)
     denyBtn.Position = UDim2.new(0.55, 0, 0, 0)
     denyBtn.BackgroundColor3 = Color3.fromRGB(200, 60, 60)
-    denyBtn.Text = "拒否"
+    denyBtn.Text = "拒否 [2]"
     denyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
     denyBtn.TextSize = 18
     denyBtn.Font = Enum.Font.GothamBold
@@ -125,16 +136,46 @@ local function createGUI()
     denyCorner.CornerRadius = UDim.new(0, 8)
     denyCorner.Parent = denyBtn
 
+    -- 二重発火防止フラグ
+    local finished = false
+
     -- 同意処理
-    agreeBtn.MouseButton1Click:Connect(function()
+    local function onAgree()
+        if finished then return end
+        finished = true
         screenGui:Destroy()
         loadstring(game:HttpGet(LOADER_URL))()
-    end)
+    end
 
     -- 拒否処理
-    denyBtn.MouseButton1Click:Connect(function()
+    local function onDeny()
+        if finished then return end
+        finished = true
         screenGui:Destroy()
         -- 何もせず終了
+    end
+
+    agreeBtn.MouseButton1Click:Connect(onAgree)
+    denyBtn.MouseButton1Click:Connect(onDeny)
+
+    -- ★ キーボード入力対応（UserInputService）
+    local UserInputService = game:GetService("UserInputService")
+    local connection
+    connection = UserInputService.InputBegan:Connect(function(input, gameProcessed)
+        if gameProcessed then return end
+        if input.KeyCode == Enum.KeyCode.One then
+            onAgree()
+        elseif input.KeyCode == Enum.KeyCode.Two then
+            onDeny()
+        end
+    end)
+
+    -- GUIが破棄されたらキー接続も切断
+    screenGui.Destroying:Connect(function()
+        if connection then
+            connection:Disconnect()
+            connection = nil
+        end
     end)
 end
 
