@@ -653,3 +653,4 @@ coroutine.wrap(function()
 end)()
 
 print("SakuraHUB-Loader.V4.1 GUI loaded successfully!")
+print("© 2026/10/1 開発チーム[土星グループさくらhub部門")
