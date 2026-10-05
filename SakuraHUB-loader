@@ -401,7 +401,7 @@ local scriptUrls = {
         ja = "https://raw.githubusercontent.com/SaturnGroup02/Sakurahub-ja-en-vn-123-/refs/heads/main/ja",
         en = "https://raw.githubusercontent.com/SaturnGroup02/Sakurahub-ja-en-vn-123-/refs/heads/main/en",
         vn = "url-VN",
-        ru = "url-RU"
+        ru = "https://raw.githubusercontent.com/SaturnGroup02/Sakurahub-ja-en-vn-123-/refs/heads/main/ru"
     }
 }
 
