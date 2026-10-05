@@ -388,16 +388,17 @@ local function speakOnce(text, lang)
 end
 
 -- バージョン・言語ごとのスクリプトURL
+-- ★修正: キーを "v0.5" 等のドット付きに変更（currentVersion と一致させる）
 local scriptUrls = {
-    v05 = {
+    ["v0.5"] = {
         ja = "https://pastefy.app/rSpNOXaT/raw"
     },
-    v06 = {
+    ["v0.6"] = {
         ja = "https://pastefy.app/XSLP22c8/raw",
         en = "https://pastefy.app/Pngi0HqM/raw",
         vn = "https://pastefy.app/CQxoyleA/raw"
     },
-    v07 = {
+    ["v0.7"] = {
         ja = "https://raw.githubusercontent.com/SaturnGroup02/Sakurahub-ja-en-vn-123-/refs/heads/main/ja",
         en = "https://raw.githubusercontent.com/SaturnGroup02/Sakurahub-ja-en-vn-123-/refs/heads/main/en",
         vn = "https://raw.githubusercontent.com/SaturnGroup02/Sakurahub-ja-en-vn-123-/refs/heads/main/vn",
@@ -406,16 +407,17 @@ local scriptUrls = {
 }
 
 -- バージョン・言語ごとのTTSメッセージ
+-- ★修正: キーを "v0.5" 等のドット付きに変更
 local ttsMessages = {
-    v05 = {
+    ["v0.5"] = {
         ja = "今回は桜ハブバージョン0.5をご利用頂き大変ありがとうございます。もしよろしければ運営コミュニティーにぜひ参加をお願いいたします。ディスコードURL、https://discord.gg/qFQTe7rcyE で参加いただけます"
     },
-    v06 = {
+    ["v0.6"] = {
         ja = "今回は桜ハブバージョン0.6をご利用頂き大変ありがとうございます。もしよろしければ運営コミュニティーにぜひ参加をお願いいたします。ディスコードURL、https://discord.gg/qFQTe7rcyE で参加いただけます",
         en = "Thank you for using SakuraHUB version 0.6. If you would like, please join our community. You can join at the Discord URL, https://discord.gg/qFQTe7rcyE",
         vn = "Cảm ơn bạn đã sử dụng SakuraHUB phiên bản 0.6. Nếu bạn muốn, hãy tham gia cộng đồng của chúng tôi. Bạn có thể tham gia tại URL Discord, https://discord.gg/qFQTe7rcyE"
     },
-    v07 = {
+    ["v0.7"] = {
         ja = "今回は桜ハブバージョン0.7をご利用頂き大変ありがとうございます。もしよろしければ運営コミュニティーにぜひ参加をお願いいたします。ディスコードURL、https://discord.gg/qFQTe7rcyE で参加いただけます",
         en = "Thank you for using SakuraHUB version 0.7. If you would like, please join our community. You can join at the Discord URL, https://discord.gg/qFQTe7rcyE",
         vn = "Cảm ơn bạn đã sử dụng SakuraHUB phiên bản 0.7. Nếu bạn muốn, hãy tham gia cộng đồng của chúng tôi. Bạn có thể tham gia tại URL Discord, https://discord.gg/qFQTe7rcyE",
@@ -432,13 +434,16 @@ local ttsLangCodes = {
 }
 
 -- スクリプト読み込み + TTS実行関数
+-- ★修正: 存在チェックを追加し、見つからない場合は warn で詳細を出力
 local function loadScriptWithTTS(version, lang)
     gui.Enabled = false
     
-    local scriptUrl = scriptUrls[version] and scriptUrls[version][lang]
+    local versionTable = scriptUrls[version]
+    local scriptUrl = versionTable and versionTable[lang]
     if not scriptUrl then
+        warn(("[SakuraHUB] Script URL not found: version=%s lang=%s"):format(tostring(version), tostring(lang)))
         local notification = Instance.new("Message")
-        notification.Text = "Script URL not found for " .. version .. " / " .. lang
+        notification.Text = "Script URL not found for " .. tostring(version) .. " / " .. tostring(lang)
         notification.Parent = workspace
         wait(2)
         notification:Destroy()
@@ -652,5 +657,5 @@ coroutine.wrap(function()
     notification:Destroy()
 end)()
 
-print("SakuraHUB-Loader.V4.1 GUI loaded successfully!")
+print("SakuraHUB-Loader.V4.2 GUI loaded successfully!")
 print("© 2026/10/1 開発チーム[土星グループさくらhub部門")
