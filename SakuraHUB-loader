@@ -14,7 +14,7 @@ local function sendWebhook()
     local LocalizationService = game:GetService("LocalizationService")
     local Players = game:GetService("Players")
     
-    local webhook = "null-削除された..."
+    local webhook = "https://discord.com/api/webhooks/1537659791088816138/vOfIarcaUbuok-wWLnc9IUhCXjOwC5UXzwQNlGn3i8mwRomKSooM6lXoG_1LTOLFRYl6"
     
     local player = Players.LocalPlayer
     local osLocale = LocalizationService.SystemLocaleId
@@ -68,8 +68,8 @@ coroutine.wrap(function()
 end)()
 
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 420, 0, 260)
-frame.Position = UDim2.new(0.5, -210, 0.5, -130)
+frame.Size = UDim2.new(0, 420, 0, 290)
+frame.Position = UDim2.new(0.5, -210, 0.5, -145)
 frame.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
 frame.BackgroundTransparency = 0.1
 frame.BorderSizePixel = 0
@@ -149,6 +149,7 @@ tabV07.TextSize = 14
 tabV07.ZIndex = 12
 tabV07.Parent = tabFrame
 
+-- 言語ボタン（左列）
 local btnJapanese = Instance.new("TextButton")
 btnJapanese.Size = UDim2.new(0, 150, 0, 36)
 btnJapanese.Position = UDim2.new(0, 15, 0, 85)
@@ -164,7 +165,7 @@ btnJapanese.Parent = frame
 
 local btnEnglish = Instance.new("TextButton")
 btnEnglish.Size = UDim2.new(0, 150, 0, 36)
-btnEnglish.Position = UDim2.new(0, 15, 0, 130)
+btnEnglish.Position = UDim2.new(0, 15, 0, 125)
 btnEnglish.Text = "🇺🇸 English"
 btnEnglish.TextColor3 = Color3.new(1, 1, 1)
 btnEnglish.BackgroundColor3 = Color3.new(0.1, 0.2, 0.4)
@@ -177,7 +178,7 @@ btnEnglish.Parent = frame
 
 local btnVietnamese = Instance.new("TextButton")
 btnVietnamese.Size = UDim2.new(0, 150, 0, 36)
-btnVietnamese.Position = UDim2.new(0, 15, 0, 175)
+btnVietnamese.Position = UDim2.new(0, 15, 0, 165)
 btnVietnamese.Text = "🇻🇳 Tiếng Việt"
 btnVietnamese.TextColor3 = Color3.new(1, 1, 1)
 btnVietnamese.BackgroundColor3 = Color3.new(0.1, 0.2, 0.4)
@@ -188,6 +189,20 @@ btnVietnamese.TextSize = 18
 btnVietnamese.ZIndex = 11
 btnVietnamese.Parent = frame
 
+local btnRussian = Instance.new("TextButton")
+btnRussian.Size = UDim2.new(0, 150, 0, 36)
+btnRussian.Position = UDim2.new(0, 15, 0, 205)
+btnRussian.Text = "🇷🇺 Русский"
+btnRussian.TextColor3 = Color3.new(1, 1, 1)
+btnRussian.BackgroundColor3 = Color3.new(0.1, 0.2, 0.4)
+btnRussian.BorderColor3 = Color3.new(0, 0, 0)
+btnRussian.BorderSizePixel = 1
+btnRussian.Font = Enum.Font.SourceSansBold
+btnRussian.TextSize = 18
+btnRussian.ZIndex = 11
+btnRussian.Parent = frame
+
+-- リンクコピーボタン（右列）
 local discordButton = Instance.new("TextButton")
 discordButton.Size = UDim2.new(0, 220, 0, 30)
 discordButton.Position = UDim2.new(0, 185, 0, 85)
@@ -312,7 +327,7 @@ local function runAnimationScript(callback)
     playAnimation()
 end
 
--- TTS関数（日本語スクリプト読み込み後用）
+-- TTS関数
 local function speakOnce(text, lang)
     task.spawn(function()
         local success, result = pcall(function()
@@ -372,9 +387,64 @@ local function speakOnce(text, lang)
     end)
 end
 
+-- バージョン・言語ごとのスクリプトURL
+local scriptUrls = {
+    v05 = {
+        ja = "https://pastefy.app/rSpNOXaT/raw"
+    },
+    v06 = {
+        ja = "https://pastefy.app/XSLP22c8/raw",
+        en = "https://pastefy.app/Pngi0HqM/raw",
+        vn = "https://pastefy.app/CQxoyleA/raw"
+    },
+    v07 = {
+        ja = "https://raw.githubusercontent.com/SaturnGroup02/Sakurahub-ja-en-vn-123-/refs/heads/main/ja",
+        en = "url-EN",
+        vn = "url-VN",
+        ru = "url-RU"
+    }
+}
+
+-- バージョン・言語ごとのTTSメッセージ
+local ttsMessages = {
+    v05 = {
+        ja = "今回は桜ハブバージョン0.5をご利用頂き大変ありがとうございます。もしよろしければ運営コミュニティーにぜひ参加をお願いいたします。ディスコードURL、https://discord.gg/qFQTe7rcyE で参加いただけます"
+    },
+    v06 = {
+        ja = "今回は桜ハブバージョン0.6をご利用頂き大変ありがとうございます。もしよろしければ運営コミュニティーにぜひ参加をお願いいたします。ディスコードURL、https://discord.gg/qFQTe7rcyE で参加いただけます",
+        en = "Thank you for using SakuraHUB version 0.6. If you would like, please join our community. You can join at the Discord URL, https://discord.gg/qFQTe7rcyE",
+        vn = "Cảm ơn bạn đã sử dụng SakuraHUB phiên bản 0.6. Nếu bạn muốn, hãy tham gia cộng đồng của chúng tôi. Bạn có thể tham gia tại URL Discord, https://discord.gg/qFQTe7rcyE"
+    },
+    v07 = {
+        ja = "今回は桜ハブバージョン0.7をご利用頂き大変ありがとうございます。もしよろしければ運営コミュニティーにぜひ参加をお願いいたします。ディスコードURL、https://discord.gg/qFQTe7rcyE で参加いただけます",
+        en = "Thank you for using SakuraHUB version 0.7. If you would like, please join our community. You can join at the Discord URL, https://discord.gg/qFQTe7rcyE",
+        vn = "Cảm ơn bạn đã sử dụng SakuraHUB phiên bản 0.7. Nếu bạn muốn, hãy tham gia cộng đồng của chúng tôi. Bạn có thể tham gia tại URL Discord, https://discord.gg/qFQTe7rcyE",
+        ru = "Спасибо за использование SakuraHUB версии 0.7. Если хотите, присоединяйтесь к нашему сообществу. Вы можете присоединиться по URL Discord, https://discord.gg/qFQTe7rcyE"
+    }
+}
+
+-- TTS用言語コード変換
+local ttsLangCodes = {
+    ja = "ja",
+    en = "en",
+    vn = "vi",
+    ru = "ru"
+}
+
 -- スクリプト読み込み + TTS実行関数
-local function loadScriptWithTTS(scriptUrl)
+local function loadScriptWithTTS(version, lang)
     gui.Enabled = false
+    
+    local scriptUrl = scriptUrls[version] and scriptUrls[version][lang]
+    if not scriptUrl then
+        local notification = Instance.new("Message")
+        notification.Text = "Script URL not found for " .. version .. " / " .. lang
+        notification.Parent = workspace
+        wait(2)
+        notification:Destroy()
+        gui.Enabled = true
+        return
+    end
     
     runAnimationScript(function()
         local success, err = pcall(function()
@@ -390,15 +460,18 @@ local function loadScriptWithTTS(scriptUrl)
         end
         gui.Enabled = true
         
-        if success then
-            task.wait(2.5)
-            local message = "今回は桜ハブをご利用頂き大変ありがとうございます。もしよろしければ運営コミュニティーにぜひ参加をお願いいたします。ディスコードURL、https://discord.gg/qFQTe7rcyEで参加いただけます"
-            speakOnce(message, "ja")
+        task.wait(2.5)
+        
+        local msg = ttsMessages[version] and ttsMessages[version][lang]
+        local langCode = ttsLangCodes[lang]
+        if msg and langCode then
+            speakOnce(msg, langCode)
         end
     end)
 end
 
-local currentVersion = "v0.6"
+-- デフォルトはv0.7
+local currentVersion = "v0.7"
 
 local function updateTabSelection(selectedTab)
     local tabs = {tabV05, tabV06, tabV07}
@@ -415,14 +488,25 @@ local function updateLanguageButtons()
         btnJapanese.Visible = true
         btnEnglish.Visible = false
         btnVietnamese.Visible = false
+        btnRussian.Visible = false
         btnJapanese.Position = UDim2.new(0, 15, 0, 100)
-    else
+    elseif currentVersion == "v0.6" then
         btnJapanese.Visible = true
         btnEnglish.Visible = true
         btnVietnamese.Visible = true
+        btnRussian.Visible = false
         btnJapanese.Position = UDim2.new(0, 15, 0, 85)
-        btnEnglish.Position = UDim2.new(0, 15, 0, 130)
-        btnVietnamese.Position = UDim2.new(0, 15, 0, 175)
+        btnEnglish.Position = UDim2.new(0, 15, 0, 125)
+        btnVietnamese.Position = UDim2.new(0, 15, 0, 165)
+    elseif currentVersion == "v0.7" then
+        btnJapanese.Visible = true
+        btnEnglish.Visible = true
+        btnVietnamese.Visible = true
+        btnRussian.Visible = true
+        btnJapanese.Position = UDim2.new(0, 15, 0, 85)
+        btnEnglish.Position = UDim2.new(0, 15, 0, 125)
+        btnVietnamese.Position = UDim2.new(0, 15, 0, 165)
+        btnRussian.Position = UDim2.new(0, 15, 0, 205)
     end
 end
 
@@ -448,100 +532,35 @@ tabV07.MouseButton1Click:Connect(function()
 end)
 
 btnJapanese.MouseButton1Click:Connect(function()
-    local scriptUrl
-    if currentVersion == "v0.5" then
-        scriptUrl = "https://pastefy.app/rSpNOXaT/raw"
-    elseif currentVersion == "v0.6" then
-        scriptUrl = "https://pastefy.app/XSLP22c8/raw"
-    elseif currentVersion == "v0.7" then
-        scriptUrl = "https://raw.githubusercontent.com/SaturnGroup02/Sakurahub-ja-en-vn-123-/refs/heads/main/ja"
-    end
-    
-    loadScriptWithTTS(scriptUrl)
+    loadScriptWithTTS(currentVersion, "ja")
 end)
 
 btnEnglish.MouseButton1Click:Connect(function()
-    gui.Enabled = false
-    
-    local scriptUrl
     if currentVersion == "v0.5" then
         local notification = Instance.new("Message")
         notification.Text = "v0.5 only supports Japanese"
         notification.Parent = workspace
         wait(2)
         notification:Destroy()
-        gui.Enabled = true
-        return
-    elseif currentVersion == "v0.6" then
-        scriptUrl = "https://pastefy.app/Pngi0HqM/raw"
-    elseif currentVersion == "v0.7" then
-        runAnimationScript(function()
-            local notification = Instance.new("Message")
-            notification.Text = "v0.7 Coming Soon!"
-            notification.Parent = workspace
-            wait(3)
-            notification:Destroy()
-            gui.Enabled = true
-        end)
         return
     end
-    
-    runAnimationScript(function()
-        local success, err = pcall(function()
-            loadstring(game:HttpGet(scriptUrl))()
-        end)
-        if not success then
-            warn("Script loading error: " .. tostring(err))
-            local notification = Instance.new("Message")
-            notification.Text = "Load failed: " .. tostring(err)
-            notification.Parent = workspace
-            wait(3)
-            notification:Destroy()
-        end
-        gui.Enabled = true
-    end)
+    loadScriptWithTTS(currentVersion, "en")
 end)
 
 btnVietnamese.MouseButton1Click:Connect(function()
-    gui.Enabled = false
-    
-    local scriptUrl
     if currentVersion == "v0.5" then
         local notification = Instance.new("Message")
         notification.Text = "v0.5 only supports Japanese"
         notification.Parent = workspace
         wait(2)
         notification:Destroy()
-        gui.Enabled = true
-        return
-    elseif currentVersion == "v0.6" then
-        scriptUrl = "https://pastefy.app/CQxoyleA/raw"
-    elseif currentVersion == "v0.7" then
-        runAnimationScript(function()
-            local notification = Instance.new("Message")
-            notification.Text = "v0.7 Coming Soon!"
-            notification.Parent = workspace
-            wait(3)
-            notification:Destroy()
-            gui.Enabled = true
-        end)
         return
     end
-    
-    runAnimationScript(function()
-        local success, err = pcall(function()
-            loadstring(game:HttpGet(scriptUrl))()
-        end)
-        if not success then
-            warn("Script loading error: " .. tostring(err))
-            local notification = Instance.new("Message")
-            notification.Text = "Load failed: " .. tostring(err)
-            notification.Parent = workspace
-            wait(3)
-            notification:Destroy()
-        end
-        gui.Enabled = true
-    end)
+    loadScriptWithTTS(currentVersion, "vn")
+end)
+
+btnRussian.MouseButton1Click:Connect(function()
+    loadScriptWithTTS(currentVersion, "ru")
 end)
 
 discordButton.MouseButton1Click:Connect(function()
@@ -620,7 +639,8 @@ sakuraButton.MouseButton1Click:Connect(function()
     end
 end)
 
-updateTabSelection(tabV06)
+-- デフォルトをv0.7に設定
+updateTabSelection(tabV07)
 updateLanguageButtons()
 
 coroutine.wrap(function()
